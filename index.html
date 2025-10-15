@@ -3,217 +3,130 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VideoPlay — Simple Landing</title>
-  <meta name="description" content="Simple one‑page video landing with lots of ad placements." />
+  <title>All Videos</title>
+  <meta name="description" content="Simple landing with rotating ads and one All Videos button. Mobile‑first." />
   <style>
-    /* ===== Simple, normal, light theme ===== */
-    :root{
-      --bg:#f5f7fb;
-      --text:#0f172a;
-      --muted:#475569;
-      --card:#ffffff;
-      --line:#e2e8f0;
-      --radius:10px;
-    }
+    /* ========== Normal, mobile‑first, no fancy UI ========== */
+    :root{ --bg:#f4f5f7; --text:#111827; --card:#fff; --line:#e5e7eb; }
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:var(--bg)}
+    body{margin:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text)}
 
-    header{background:#0f172a;color:#fff}
-    .top{max-width:1200px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center}
-    .title{font-weight:800}
-    .urlbar{margin-left:auto;display:flex;gap:8px}
-    .urlbar input{width:min(55vw,520px);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
-    .urlbar button{border:0;background:#22c55e;color:#0b1220;font-weight:800;border-radius:8px;padding:8px 12px;cursor:pointer}
+    .wrap{max-width:1230px;margin:0 auto;padding:10px}
+    .box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px}
 
-    /* Layout */
-    .wrap{max-width:1230px;margin:14px auto;padding:0 12px}
-    .banner{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:6px;display:grid;place-items:center}
-
-    .grid{display:grid;grid-template-columns:180px minmax(0, 760px) 280px;gap:12px;align-items:start;margin-top:12px}
+    /* Layout: desktop three columns; mobile single column */
+    .grid{display:grid;grid-template-columns:190px minmax(0, 770px) 260px;gap:12px;align-items:start}
     @media (max-width:1100px){.grid{grid-template-columns:180px minmax(0,1fr)}.right{display:none}}
-    @media (max-width:780px){.grid{grid-template-columns:1fr}.left{display:none}}
+    @media (max-width:780px){.grid{grid-template-columns:1fr}.left,.right{display:none}}
 
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
-    .pad{padding:10px}
+    .ad-slot{display:block;min-height:40px}
 
-    .ad{min-height:90px;display:grid;place-items:center;border:1px dashed #cbd5e1;border-radius:8px;background:#fafbff}
-    .stack > *{margin-bottom:12px}
+    /* Center */
+    .center{display:flex;flex-direction:column;gap:12px}
+    .btn{display:block;background:#2563eb;color:#fff;text-decoration:none;font-weight:700;padding:14px 16px;border-radius:6px;text-align:center}
 
-    .video-wrap{position:relative;border-radius:8px;overflow:hidden;background:#000;aspect-ratio:16/9}
-    .video-wrap iframe,.video-wrap video{width:100%;height:100%;display:block}
+    /* Mobile‑only extra rows */
+    .monly{display:none}
+    @media (max-width:780px){.monly{display:block}}
 
-    .under-video{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:700px){.under-video{grid-template-columns:1fr}}
-
-    .native{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px}
-
-    .bottom-sticky{position:sticky;bottom:0;left:0;right:0;z-index:30;background:#ffffffee;border-top:1px solid var(--line);backdrop-filter:blur(4px)}
-    .bottom-inner{max-width:1200px;margin:0 auto;padding:6px 10px;display:flex;gap:10px;align-items:center}
-    .smartlink{margin-left:auto}
-    .smartlink a{display:inline-block;background:#0ea5e9;color:#fff;text-decoration:none;font-weight:800;padding:8px 12px;border-radius:8px}
-
-    small.muted{color:var(--muted)}
+    /* Bottom sticky */
+    .bottom{position:sticky;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:5}
+    .bottom .inner{max-width:1230px;margin:0 auto;padding:6px 10px}
   </style>
 </head>
 <body>
-  <header>
-    <div class="top">
-      <div class="title">VideoPlay</div>
-      <div class="urlbar">
-        <input id="url" type="url" placeholder="Paste video URL (YouTube / MP4 / Vimeo / Dailymotion)" />
-        <button id="playBtn">Play</button>
-      </div>
-    </div>
-  </header>
-
   <div class="wrap">
-    <!-- Top Leaderboard 728x90 -->
-    <div class="banner" id="ad-728x90">
-      <!-- 2) Banner 728x90 -->
-      <script type="text/javascript">
-        atOptions = { 'key':'518bb62c4fe828a47ab0530ed37ad2bf','format':'iframe','height':90,'width':728,'params':{} };
-      </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/518bb62c4fe828a47ab0530ed37ad2bf/invoke.js"></script>
-    </div>
+    <!-- TOP: Rotating 728/468 banner -->
+    <div class="box"><div id="slot-top" class="ad-slot" style="min-height:90px"></div></div>
 
-    <div class="grid">
-      <!-- Left Sidebar -->
-      <aside class="left stack">
-        <div class="card pad">
-          <!-- 3) 160x600 -->
-          <div class="ad">
-            <script type="text/javascript">
-              atOptions = { 'key':'d36c2f4dfc3863469f3b2132607617c6','format':'iframe','height':600,'width':160,'params':{} };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/d36c2f4dfc3863469f3b2132607617c6/invoke.js"></script>
-          </div>
-        </div>
-        <div class="card pad">
-          <!-- 4) 160x300 -->
-          <div class="ad">
-            <script type="text/javascript">
-              atOptions = { 'key':'9ab75744061e372e002498c8b7270b8e','format':'iframe','height':300,'width':160,'params':{} };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/9ab75744061e372e002498c8b7270b8e/invoke.js"></script>
-          </div>
-        </div>
+    <div class="grid" style="margin-top:12px">
+      <!-- LEFT column -->
+      <aside class="left">
+        <div class="box" style="margin-bottom:12px"><div id="slot-left-1" class="ad-slot" style="min-height:600px"></div></div>
+        <div class="box"><div id="slot-left-2" class="ad-slot" style="min-height:300px"></div></div>
       </aside>
 
-      <!-- Center Content -->
-      <section>
-        <div class="card pad">
-          <div class="video-wrap" id="player">
-            <!-- video will mount here -->
-          </div>
-          <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:8px">
-            <small class="muted">Tip: open with <code>?v=</code> parameter or paste URL above</small>
-            <small id="vSrc" class="muted">Source: —</small>
-          </div>
+      <!-- CENTER column -->
+      <section class="center">
+        <div class="box"><a class="btn" id="allVideosBtn" href="https://www.revenuecpmgate.com/xf7ermdz85?key=b269d3dd076f7f0bc87132f84bb60eeb" target="_blank" rel="nofollow sponsored noopener">All Videos</a></div>
+        <div class="box"><div id="slot-under-1" class="ad-slot" style="min-height:60px"></div></div>
+        <div class="box">
+          <!-- Native widget (non-rotating) -->
+          <script async data-cfasync="false" src="https://pl27734286.revenuecpmgate.com/2e5cb186c4b38f8965debe7933cde6dd/invoke.js"></script>
+          <div id="container-2e5cb186c4b38f8965debe7933cde6dd"></div>
         </div>
-
-        <!-- Under video ads: 468x60 + Native -->
-        <div class="under-video" style="margin-top:12px">
-          <div class="card pad">
-            <!-- 5) 468x60 -->
-            <div class="ad">
-              <script type="text/javascript">
-                atOptions = { 'key':'4e4e54cb42e36c5eb4dc8ab45feeefb9','format':'iframe','height':60,'width':468,'params':{} };
-              </script>
-              <script type="text/javascript" src="//www.highperformanceformat.com/4e4e54cb42e36c5eb4dc8ab45feeefb9/invoke.js"></script>
-            </div>
-          </div>
-          <div class="card pad native">
-            <!-- 10) Native Banner -->
-            <script async="async" data-cfasync="false" src="//pl27734286.revenuecpmgate.com/2e5cb186c4b38f8965debe7933cde6dd/invoke.js"></script>
-            <div id="container-2e5cb186c4b38f8965debe7933cde6dd"></div>
-          </div>
-        </div>
+        <div class="box"><div id="slot-under-2" class="ad-slot" style="min-height:90px"></div></div>
       </section>
 
-      <!-- Right Sidebar -->
-      <aside class="right stack">
-        <div class="card pad">
-          <!-- 1) 300x250 -->
-          <div class="ad">
-            <script type="text/javascript">
-              atOptions = { 'key':'72b7232ca3ae40f63836f3c472360365','format':'iframe','height':250,'width':300,'params':{} };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/72b7232ca3ae40f63836f3c472360365/invoke.js"></script>
-          </div>
-        </div>
-        <div class="card pad">
-          <!-- extra: 320x50 for desktop or fallback -->
-          <div class="ad">
-            <script type="text/javascript">
-              atOptions = { 'key':'b7193586f4106b807d27a90a71d22c37','format':'iframe','height':50,'width':320,'params':{} };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/b7193586f4106b807d27a90a71d22c37/invoke.js"></script>
-          </div>
-        </div>
+      <!-- RIGHT column -->
+      <aside class="right">
+        <div class="box" style="margin-bottom:12px"><div id="slot-right-1" class="ad-slot" style="min-height:250px"></div></div>
+        <div class="box"><div id="slot-right-2" class="ad-slot" style="min-height:50px"></div></div>
       </aside>
     </div>
 
-    <!-- Extra row under grid: another 728x90 if needed -->
-    <div class="banner" style="margin-top:12px">
-      <script type="text/javascript">
-        atOptions = { 'key':'518bb62c4fe828a47ab0530ed37ad2bf','format':'iframe','height':90,'width':728,'params':{} };
-      </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/518bb62c4fe828a47ab0530ed37ad2bf/invoke.js"></script>
+    <!-- MOBILE‑ONLY extra rows -->
+    <div class="monly" style="margin-top:12px">
+      <div class="box" style="margin-bottom:12px"><div id="slot-m-1" class="ad-slot" style="min-height:250px"></div></div>
+      <div class="box" style="margin-bottom:12px"><div id="slot-m-2" class="ad-slot" style="min-height:50px"></div></div>
+      <div class="box"><div id="slot-m-3" class="ad-slot" style="min-height:90px"></div></div>
     </div>
   </div>
 
-  <!-- Bottom sticky: 320x50 + Smartlink button -->
-  <div class="bottom-sticky">
-    <div class="bottom-inner">
-      <div id="bottom320x50">
-        <!-- 9) 320x50 -->
-        <script type="text/javascript">
-          atOptions = { 'key':'b7193586f4106b807d27a90a71d22c37','format':'iframe','height':50,'width':320,'params':{} };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/b7193586f4106b807d27a90a71d22c37/invoke.js"></script>
-      </div>
-      <div class="smartlink"><a id="smartBtn" href="https://www.revenuecpmgate.com/xf7ermdz85?key=b269d3dd076f7f0bc87132f84bb60eeb" target="_blank" rel="nofollow sponsored noopener">Smart Offer</a></div>
-    </div>
-  </div>
+  <!-- BOTTOM sticky: rotates 320x50/468x60 -->
+  <div class="bottom"><div class="inner"><div class="box"><div id="slot-bottom" class="ad-slot" style="min-height:50px"></div></div></div></div>
 
-  <!-- Global monetization: Popunder + Social Bar -->
-  <!-- 6) Popunder -->
-  <script type='text/javascript' src='//pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js'></script>
-  <!-- 8) Social Bar -->
-  <script type='text/javascript' src='//pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js'></script>
+  <!-- Global monetization: Popunder + Social Bar (leave as-is) -->
+  <script src="https://pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js"></script>
+  <script src="https://pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js"></script>
 
   <script>
-    // Minimal player: uses ?v= or the input box
-    const qp=(k)=>new URL(location.href).searchParams.get(k);
-    const src=qp('v');
-    const player=document.getElementById('player');
-
-    function isDirect(u){return /\.(mp4|webm|ogg)(\?|#|$)/i.test(u)}
-    function isHLS(u){return /\.m3u8(\?|#|$)/i.test(u)}
-    function isEmbed(u){try{const h=new URL(u).host;return ['www.youtube.com','youtube.com','youtu.be','player.vimeo.com','vimeo.com','www.dailymotion.com','geo.dailymotion.com'].includes(h)}catch{return false}}
-
-    function yt(u){const x=new URL(u);let id=x.searchParams.get('v');if(!id&&x.pathname.startsWith('/shorts/')) id=x.pathname.split('/')[2];if(!id&&x.host==='youtu.be') id=x.pathname.slice(1);return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`}
-    function vm(u){const x=new URL(u);const id=x.pathname.split('/').filter(Boolean)[0];return `https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0`}
-    function dm(u){const x=new URL(u);const id=x.pathname.split('/').pop();return `https://www.dailymotion.com/embed/video/${id}`}
-
-    function mount(u){ if(!u) return; document.getElementById('vSrc').textContent = 'Source: ' + u;
-      if(isDirect(u)){const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';v.src=u;player.appendChild(v);return}
-      if(isHLS(u)){const d=document.createElement('div');d.style.color='#334155';d.style.display='grid';d.style.placeItems='center';d.textContent='HLS (.m3u8) — integrate hls.js to play';player.appendChild(d);return}
-      if(isEmbed(u)){
-        let e=u; const h=new URL(u).host; if(h.includes('youtu')) e=yt(u); else if(h.includes('vimeo')) e=vm(u); else if(h.includes('dailymotion')) e=dm(u);
-        const ifr=document.createElement('iframe');ifr.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';ifr.allowFullscreen=true;ifr.loading='lazy';ifr.src=e;player.appendChild(ifr);return
-      }
-      const open=document.createElement('a');open.href=u;open.target='_blank';open.rel='noopener';open.textContent='Open video in new tab';open.style.display='grid';open.style.placeItems='center';open.style.height='100%';open.style.color='#111827';open.style.background='#f8fafc';player.appendChild(open);
+    // ====== Programmatic ad loader (saf(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+    function loadHP(target, key, w, h){
+      clearNode(target);
+      // 1) inline atOptions
+      const s1 = document.createElement('script');
+      s1.type = 'text/javascript';
+      s1.text = `var atOptions={key:"${key}",format:"iframe",height:${h},width:${w},params:{}};`;
+      // 2) external invoke
+      const s2 = document.createElement('script');
+      s2.type = 'text/javascript';
+      s2.src = 'https://www.highperformanceformat.com/'+key+'/invoke.js';
+      target.appendChild(s1); target.appendChild(s2);
     }
 
-    // Init from ?v
-    mount(src);
+    // ====== Rotation plan per slot ======
+    const ROTATE_MS = 30000; // 30 sec
+    const S = {
+      k300x250:'72b7232ca3ae40f63836f3c472360365',
+      k728x90 :'518bb62c4fe828a47ab0530ed37ad2bf',
+      k160x600:'d36c2f4dfc3863469f3b2132607617c6',
+      k160x300:'9ab75744061e372e002498c8b7270b8e',
+      k468x60 :'4e4e54cb42e36c5eb4dc8ab45feeefb9',
+      k320x50 :'b7193586f4106b807d27a90a71d22c37'
+    };
 
-    // URL bar
-    const input=document.getElementById('url');
-    const btn=document.getElementById('playBtn');
-    btn.addEventListener('click',()=>{ if(!input.value) return; const u=new URL(location.href); u.searchParams.set('v',input.value); location.href=u.toString(); });
+    const plan = {
+      'slot-top'   : [(el)=>loadHP(el,S.k728x90,728,90), (el)=>loadHP(el,S.k468x60,468,60)],
+      'slot-left-1': [(el)=>loadHP(el,S.k160x600,160,600), (el)=>loadHP(el,S.k160x300,160,300)],
+      'slot-left-2': [(el)=>loadHP(el,S.k160x300,160,300), (el)=>loadHP(el,S.k160x600,160,600)],
+      'slot-right-1':[(el)=>loadHP(el,S.k300x250,300,250), (el)=>loadHP(el,S.k320x50,320,50)],
+      'slot-right-2':[(el)=>loadHP(el,S.k320x50,320,50), (el)=>loadHP(el,S.k300x250,300,250)],
+      'slot-under-1':[(el)=>loadHP(el,S.k468x60,468,60), (el)=>loadHP(el,S.k320x50,320,50)],
+      'slot-under-2':[(el)=>loadHP(el,S.k728x90,728,90), (el)=>loadHP(el,S.k468x60,468,60)],
+      // mobile rows
+      'slot-m-1'   :[(el)=>loadHP(el,S.k300x250,300,250), (el)=>loadHP(el,S.k320x50,320,50)],
+      'slot-m-2'   :[(el)=>loadHP(el,S.k320x50,320,50), (el)=>loadHP(el,S.k468x60,468,60)],
+      'slot-m-3'   :[(el)=>loadHP(el,S.k728x90,728,90),  (el)=>loadHP(el,S.k320x50,320,50)],
+      'slot-bottom':[(el)=>loadHP(el,S.k320x50,320,50), (el)=>loadHP(el,S.k468x60,468,60)]
+    };
+
+    const idx = {};
+    function rotate(id){ const el=document.getElementById(id); if(!el) return; const arr=plan[id]; if(!arr) return; idx[id]=(idx[id]??-1)+1; if(idx[id]>=arr.length) idx[id]=0; arr[idx[id]](el); }
+
+    // init all slots, then schedule rotation
+    Object.keys(plan).forEach(rotate);
+    setInterval(()=>{ Object.keys(plan).forEach(rotate); }, ROTATE_MS);
   </script>
 </body>
 </html>
