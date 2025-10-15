@@ -3,69 +3,105 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>All Videos</title>
-  <meta name="description" content="Simple landing with rotating ads and one All Videos button. Mobile‑first." />
+  <title>All Videos — Downloads</title>
+  <meta name="description" content="Simple landing: 6 blurred preview photos with Download buttons, Terabox folder link, and rotating ads. Mobile‑first." />
   <style>
-    /* ========== Normal, mobile‑first, no fancy UI ========== */
-    :root{ --bg:#f4f5f7; --text:#111827; --card:#fff; --line:#e5e7eb; }
+    /* ===== Super simple, mobile‑first layout ===== */
+    :root{ --bg:#f6f7fb; --text:#111827; --card:#fff; --line:#e5e7eb; --muted:#6b7280; --btn:#2563eb; }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text)}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Arial, Helvetica, sans-serif}
+    a{color:inherit}
 
     .wrap{max-width:1230px;margin:0 auto;padding:10px}
     .box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px}
 
-    /* Layout: desktop three columns; mobile single column */
-    .grid{display:grid;grid-template-columns:190px minmax(0, 770px) 260px;gap:12px;align-items:start}
+    /* Grid: desktop 3 cols (left ads | center | right ads), mobile single */
+    .grid{display:grid;grid-template-columns:190px minmax(0,770px) 260px;gap:12px;align-items:start}
     @media (max-width:1100px){.grid{grid-template-columns:180px minmax(0,1fr)}.right{display:none}}
     @media (max-width:780px){.grid{grid-template-columns:1fr}.left,.right{display:none}}
 
-    .ad-slot{display:block;min-height:40px}
+    /* Gallery of 6 images */
+    .gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:560px){.gallery{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    .thumb{position:relative;height:180px;background:#dbe3f4 center/cover no-repeat;filter:blur(12px);}
+    .caption{display:flex;justify-content:space-between;align-items:center;padding:10px}
+    .btn{display:inline-block;background:var(--btn);color:#fff;text-decoration:none;font-weight:700;padding:8px 12px;border-radius:6px}
+    .captext{color:var(--muted);font-size:14px}
 
-    /* Center */
-    .center{display:flex;flex-direction:column;gap:12px}
-    .btn{display:block;background:#2563eb;color:#fff;text-decoration:none;font-weight:700;padding:14px 16px;border-radius:6px;text-align:center}
+    /* Ad slots */
+    .ad-slot{display:block;min-height:40px}
 
     /* Mobile‑only extra rows */
     .monly{display:none}
     @media (max-width:780px){.monly{display:block}}
 
-    /* Bottom sticky */
+    /* Bottom sticky mobile ad */
     .bottom{position:sticky;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:5}
     .bottom .inner{max-width:1230px;margin:0 auto;padding:6px 10px}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- TOP: Rotating 728/468 banner -->
+    <!-- TOP rotating banner (728/468) -->
     <div class="box"><div id="slot-top" class="ad-slot" style="min-height:90px"></div></div>
 
     <div class="grid" style="margin-top:12px">
-      <!-- LEFT column -->
+      <!-- LEFT ads (rotate 160x600/160x300) -->
       <aside class="left">
         <div class="box" style="margin-bottom:12px"><div id="slot-left-1" class="ad-slot" style="min-height:600px"></div></div>
         <div class="box"><div id="slot-left-2" class="ad-slot" style="min-height:300px"></div></div>
       </aside>
 
-      <!-- CENTER column -->
-      <section class="center">
-        <div class="box"><a class="btn" id="allVideosBtn" href="https://www.revenuecpmgate.com/xf7ermdz85?key=b269d3dd076f7f0bc87132f84bb60eeb" target="_blank" rel="nofollow sponsored noopener">All Videos</a></div>
-        <div class="box"><div id="slot-under-1" class="ad-slot" style="min-height:60px"></div></div>
+      <!-- CENTER: Gallery + under ads -->
+      <section>
         <div class="box">
-          <!-- Native widget (non-rotating) -->
+          <div class="gallery">
+            <!-- Images blurred (no link on image) + one Download Now button that goes to the SAME Terabox folder -->
+            <div class="card">
+              <div class="thumb" style="background-image:url('https://i.ibb.co/nqR4wqjZ/9e72f3e6dc885f9c2d39f52285776f95-24.jpg')"></div>
+              <div class="caption"><span class="captext">Preview 1</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
+            </div>
+            <div class="card">
+              <div class="thumb" style="background-image:url('https://i.ibb.co/TDzy9PqG/image.png')"></div>
+              <div class="caption"><span class="captext">Preview 2</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
+            </div>
+            <div class="card">
+              <div class="thumb" style="background-image:url('https://i.ibb.co/ksK7mh28/image.png')"></div>
+              <div class="caption"><span class="captext">Preview 3</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
+            </div>
+            <div class="card">
+              <div class="thumb" style="background-image:url('https://i.ibb.co/4Z4NvWHt/image.png')"></div>
+              <div class="caption"><span class="captext">Preview 4</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
+            </div>
+            <div class="card">
+              <div class="thumb" style="background-image:url('https://i.ibb.co/h11cVCth/image.png')"></div>
+              <div class="caption"><span class="captext">Preview 5</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
+            </div>
+            <div class="card">
+              <div class="thumb" style="background-image:url('https://i.ibb.co/Gfhzj8QG/image.png')"></div>
+              <div class="caption"><span class="captext">Preview 6</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Under gallery ads: 468x60/728x90 rotation + Native widget fixed -->
+        <div class="box" style="margin-top:12px"><div id="slot-under-1" class="ad-slot" style="min-height:60px"></div></div>
+        <div class="box" style="margin-top:12px">
           <script async data-cfasync="false" src="https://pl27734286.revenuecpmgate.com/2e5cb186c4b38f8965debe7933cde6dd/invoke.js"></script>
           <div id="container-2e5cb186c4b38f8965debe7933cde6dd"></div>
         </div>
-        <div class="box"><div id="slot-under-2" class="ad-slot" style="min-height:90px"></div></div>
+        <div class="box" style="margin-top:12px"><div id="slot-under-2" class="ad-slot" style="min-height:90px"></div></div>
       </section>
 
-      <!-- RIGHT column -->
+      <!-- RIGHT ads (rotate 300x250/320x50) -->
       <aside class="right">
         <div class="box" style="margin-bottom:12px"><div id="slot-right-1" class="ad-slot" style="min-height:250px"></div></div>
         <div class="box"><div id="slot-right-2" class="ad-slot" style="min-height:50px"></div></div>
       </aside>
     </div>
 
-    <!-- MOBILE‑ONLY extra rows -->
+    <!-- MOBILE‑ONLY extra rows (rotate) -->
     <div class="monly" style="margin-top:12px">
       <div class="box" style="margin-bottom:12px"><div id="slot-m-1" class="ad-slot" style="min-height:250px"></div></div>
       <div class="box" style="margin-bottom:12px"><div id="slot-m-2" class="ad-slot" style="min-height:50px"></div></div>
@@ -76,28 +112,27 @@
   <!-- BOTTOM sticky: rotates 320x50/468x60 -->
   <div class="bottom"><div class="inner"><div class="box"><div id="slot-bottom" class="ad-slot" style="min-height:50px"></div></div></div></div>
 
-  <!-- Global monetization: Popunder + Social Bar (leave as-is) -->
+  <!-- Global monetization: Popunder + Social Bar -->
   <script src="https://pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js"></script>
   <script src="https://pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js"></script>
 
   <script>
-    // ====== Programmatic ad loader (saf(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+    // ===== Programmatic ad loader (safe, no closing tag problem) =====
+    function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
     function loadHP(target, key, w, h){
       clearNode(target);
-      // 1) inline atOptions
       const s1 = document.createElement('script');
       s1.type = 'text/javascript';
       s1.text = `var atOptions={key:"${key}",format:"iframe",height:${h},width:${w},params:{}};`;
-      // 2) external invoke
       const s2 = document.createElement('script');
       s2.type = 'text/javascript';
       s2.src = 'https://www.highperformanceformat.com/'+key+'/invoke.js';
       target.appendChild(s1); target.appendChild(s2);
     }
 
-    // ====== Rotation plan per slot ======
-    const ROTATE_MS = 30000; // 30 sec
-    const S = {
+    // ===== Rotation config =====
+    const ROTATE_MS = 25000; // 25s rotate
+    const K = {
       k300x250:'72b7232ca3ae40f63836f3c472360365',
       k728x90 :'518bb62c4fe828a47ab0530ed37ad2bf',
       k160x600:'d36c2f4dfc3863469f3b2132607617c6',
@@ -107,26 +142,27 @@
     };
 
     const plan = {
-      'slot-top'   : [(el)=>loadHP(el,S.k728x90,728,90), (el)=>loadHP(el,S.k468x60,468,60)],
-      'slot-left-1': [(el)=>loadHP(el,S.k160x600,160,600), (el)=>loadHP(el,S.k160x300,160,300)],
-      'slot-left-2': [(el)=>loadHP(el,S.k160x300,160,300), (el)=>loadHP(el,S.k160x600,160,600)],
-      'slot-right-1':[(el)=>loadHP(el,S.k300x250,300,250), (el)=>loadHP(el,S.k320x50,320,50)],
-      'slot-right-2':[(el)=>loadHP(el,S.k320x50,320,50), (el)=>loadHP(el,S.k300x250,300,250)],
-      'slot-under-1':[(el)=>loadHP(el,S.k468x60,468,60), (el)=>loadHP(el,S.k320x50,320,50)],
-      'slot-under-2':[(el)=>loadHP(el,S.k728x90,728,90), (el)=>loadHP(el,S.k468x60,468,60)],
-      // mobile rows
-      'slot-m-1'   :[(el)=>loadHP(el,S.k300x250,300,250), (el)=>loadHP(el,S.k320x50,320,50)],
-      'slot-m-2'   :[(el)=>loadHP(el,S.k320x50,320,50), (el)=>loadHP(el,S.k468x60,468,60)],
-      'slot-m-3'   :[(el)=>loadHP(el,S.k728x90,728,90),  (el)=>loadHP(el,S.k320x50,320,50)],
-      'slot-bottom':[(el)=>loadHP(el,S.k320x50,320,50), (el)=>loadHP(el,S.k468x60,468,60)]
+      'slot-top'   :[(el)=>loadHP(el,K.k728x90,728,90),(el)=>loadHP(el,K.k468x60,468,60)],
+      'slot-left-1':[(el)=>loadHP(el,K.k160x600,160,600),(el)=>loadHP(el,K.k160x300,160,300)],
+      'slot-left-2':[(el)=>loadHP(el,K.k160x300,160,300),(el)=>loadHP(el,K.k160x600,160,600)],
+      'slot-right-1':[(el)=>loadHP(el,K.k300x250,300,250),(el)=>loadHP(el,K.k320x50,320,50)],
+      'slot-right-2':[(el)=>loadHP(el,K.k320x50,320,50),(el)=>loadHP(el,K.k300x250,300,250)],
+      'slot-under-1':[(el)=>loadHP(el,K.k468x60,468,60),(el)=>loadHP(el,K.k320x50,320,50)],
+      'slot-under-2':[(el)=>loadHP(el,K.k728x90,728,90),(el)=>loadHP(el,K.k468x60,468,60)],
+      'slot-m-1'   :[(el)=>loadHP(el,K.k300x250,300,250),(el)=>loadHP(el,K.k320x50,320,50)],
+      'slot-m-2'   :[(el)=>loadHP(el,K.k320x50,320,50),(el)=>loadHP(el,K.k468x60,468,60)],
+      'slot-m-3'   :[(el)=>loadHP(el,K.k728x90,728,90),(el)=>loadHP(el,K.k320x50,320,50)],
+      'slot-bottom':[(el)=>loadHP(el,K.k320x50,320,50),(el)=>loadHP(el,K.k468x60,468,60)]
     };
 
-    const idx = {};
+    const idx={};
     function rotate(id){ const el=document.getElementById(id); if(!el) return; const arr=plan[id]; if(!arr) return; idx[id]=(idx[id]??-1)+1; if(idx[id]>=arr.length) idx[id]=0; arr[idx[id]](el); }
-
-    // init all slots, then schedule rotation
     Object.keys(plan).forEach(rotate);
     setInterval(()=>{ Object.keys(plan).forEach(rotate); }, ROTATE_MS);
+
+    // ===== One Terabox folder for ALL download buttons =====
+    const TERABOX_URL = '#REPLACE_WITH_YOUR_TERABOX_FOLDER_URL';
+    document.querySelectorAll('.dl').forEach(a=>{ a.href = TERABOX_URL; });
   </script>
 </body>
 </html>
