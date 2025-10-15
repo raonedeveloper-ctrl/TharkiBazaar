@@ -1,206 +1,587 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>All Videos — Downloads</title>
-  <meta name="description" content="Simple landing: 6 blurred preview photos with Download buttons, Terabox folder link, and rotating ads. Mobile‑first." />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TharkiBazaar</title>
+  <meta name="description" content="TharkiBazaar mobile-first landing page with blurred previews, Terabox downloads, and rotating ad placements.">
   <style>
-    /* ===== Super simple, mobile‑first layout ===== */
-    :root{ --bg:#f6f7fb; --text:#111827; --card:#fff; --line:#e5e7eb; --muted:#6b7280; --btn:#2563eb; }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:Arial, Helvetica, sans-serif}
-    a{color:inherit}
-
-    .wrap{max-width:1230px;margin:0 auto;padding:10px}
-    .box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px}
-
-    /* Grid: desktop 3 cols (left ads | center | right ads), mobile single */
-    .grid{display:grid;grid-template-columns:190px minmax(0,770px) 260px;gap:12px;align-items:start}
-    @media (max-width:1100px){.grid{grid-template-columns:180px minmax(0,1fr)}.right{display:none}}
-    @media (max-width:780px){.grid{grid-template-columns:1fr}.left,.right{display:none}}
-
-    /* Gallery of 6 images */
-    .gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:560px){.gallery{grid-template-columns:1fr}}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
-    .thumb{position:relative;height:180px;background:#dbe3f4 center/cover no-repeat;filter:blur(12px);}
-    .caption{display:flex;justify-content:space-between;align-items:center;padding:10px}
-    .btn{display:inline-block;background:var(--btn);color:#fff;text-decoration:none;font-weight:700;padding:8px 12px;border-radius:6px}
-    .captext{color:var(--muted);font-size:14px}
-
-    /* Ad slots */
-    .ad-slot{display:block;min-height:40px}
-
-    /* Mobile‑only extra rows */
-    .monly{display:none}
-    @media (max-width:780px){.monly{display:block}}
-
-    /* Bottom sticky mobile ad */
-    .bottom{position:sticky;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:5}
-    .bottom .inner{max-width:1230px;margin:0 auto;padding:6px 10px}
+    :root{
+      --bg:#f4f5f8;
+      --text:#101828;
+      --card:#ffffff;
+      --line:#d0d5dd;
+      --muted:#667085;
+      --button:#2563eb;
+      --button-hover:#1e4fc5;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Segoe UI",Arial,sans-serif;
+      line-height:1.5;
+      padding-bottom:90px;
+    }
+    a{text-decoration:none;color:inherit;}
+    header{
+      padding:24px 16px;
+      text-align:center;
+      font-weight:800;
+      font-size:clamp(1.8rem,2vw + 1rem,2.8rem);
+      letter-spacing:0.08em;
+    }
+    header span{display:inline-block;}
+    .page{
+      max-width:1280px;
+      margin:0 auto;
+      padding:0 16px 32px;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:16px;
+      margin-bottom:16px;
+      box-shadow:0 1px 2px rgba(16,24,40,0.04);
+    }
+    .layout{
+      display:grid;
+      grid-template-columns:220px minmax(0,1fr) 280px;
+      gap:16px;
+      align-items:start;
+    }
+    .sidebar-left,
+    .sidebar-right{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--card);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .thumb{
+      position:relative;
+      height:180px;
+      background:#cbd5f5;
+    }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter:blur(10px);
+      transform:scale(1.08);
+      pointer-events:none;
+      user-select:none;
+    }
+    .eye-off{
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:rgba(16,24,40,0.72);
+      border-radius:999px;
+      padding:6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .eye-off svg{
+      display:block;
+      width:20px;
+      height:20px;
+      fill:#f8fafc;
+    }
+    .card-body{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .card-title{
+      font-size:0.95rem;
+      font-weight:600;
+      color:var(--muted);
+    }
+    .card-actions{
+      display:flex;
+      justify-content:flex-end;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--button);
+      color:#fff;
+      font-weight:600;
+      border-radius:999px;
+      padding:9px 16px;
+      transition:background 0.2s ease;
+    }
+    .btn:hover{background:var(--button-hover);}
+    .btn:focus-visible{
+      outline:3px solid rgba(37,99,235,0.35);
+      outline-offset:2px;
+    }
+    .ad-slot{
+      width:100%;
+      min-height:50px;
+      border:1px dashed var(--line);
+      border-radius:10px;
+      background:#fbfcfe;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .ad-slot span{
+      font-size:0.8rem;
+      color:var(--muted);
+    }
+    .under-gallery .native{margin-top:12px;}
+    .mobile-ads{
+      display:none;
+      gap:12px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    .mobile-ads .ad-slot{min-height:250px;}
+    .sticky-footer{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      z-index:200;
+      background:rgba(255,255,255,0.92);
+      border-top:1px solid var(--line);
+      backdrop-filter:blur(4px);
+      padding:8px 0;
+    }
+    .sticky-inner{
+      max-width:540px;
+      margin:0 auto;
+      padding:0 16px;
+    }
+    @media (max-width:1100px){
+      .layout{
+        grid-template-columns:220px minmax(0,1fr);
+      }
+      .sidebar-right{display:none;}
+    }
+    @media (max-width:780px){
+      .layout{grid-template-columns:1fr;}
+      .sidebar-left,
+      .sidebar-right{display:none;}
+      .panel{padding:14px;}
+      .mobile-ads{display:grid;}
+      .gallery{grid-template-columns:repeat(2,minmax(0,1fr));}
+      body{padding-bottom:110px;}
+    }
+    @media (min-width:640px){
+      .gallery{grid-template-columns:repeat(3,minmax(0,1fr));}
+    }
+    @media (min-width:1024px){
+      .gallery{grid-template-columns:repeat(5,minmax(0,1fr));}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <!-- TOP rotating banner (728/468) -->
-    <div class="box"><div id="slot-top" class="ad-slot" style="min-height:90px"></div></div>
-
-    <div class="grid" style="margin-top:12px">
-      <!-- LEFT ads (rotate 160x600/160x300) -->
-      <aside class="left">
-        <div class="box" style="margin-bottom:12px"><div id="slot-left-1" class="ad-slot" style="min-height:600px"></div></div>
-        <div class="box"><div id="slot-left-2" class="ad-slot" style="min-height:300px"></div></div>
-      </aside>
-
-      <!-- CENTER: Gallery + under ads -->
-      <section>
-        <div class="box">
-          <div class="gallery">
-            <!-- 10 AI-style female avatars as inline SVG backgrounds (blurred). Images themselves are NOT clickable. Only buttons go to TERABOX_URL. -->
-            
-            <!-- Card 1 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g1\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23fde68a\'/><stop stop-color=\'%23fca5a5\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g1)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'400\' cy=\'230\' r=\'90\'/><path d=\'M280 420q120-80 240 0v120H280z\'/><path d=\'M310 270c30 40 150 40 180 0 10-20 10-60-10-90 25 10 55 40 70 80 10 25 10 45 10 70-90 0-250 0-330 0 0-25 0-45 10-70 15-40 45-70 70-80-20 30-20 70-10 90z\' fill=\'%23fef3c7\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 1</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g2\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23a7f3d0\'/><stop stop-color=\'%2393c5fd\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g2)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'410\' cy=\'230\' r=\'90\'/><path d=\'M290 420q120-70 240 0v120H290z\'/><path d=\'M320 260c15 30 150 40 180 0 20-35-5-75-20-95 40 15 70 60 80 100 5 20 5 40 5 65-85 0-245 0-330 0 0-25 0-45 10-65 10-25 40-70 80-100-15 20-40 60-5 95z\' fill=\'%23e5e7eb\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 2</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g3\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23fbcfe8\'/><stop stop-color=\'%23fde68a\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g3)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'400\' cy=\'220\' r=\'85\'/><path d=\'M280 420q120-60 240 0v120H280z\'/><path d=\'M310 255c20 30 150 30 180 0 8-12 10-35 0-60 35 18 65 58 72 95 4 18 6 35 6 55-88 0-248 0-330 0 0-20 3-37 7-55 8-37 37-77 65-95-10 25-10 48 0 60z\' fill=\'%23fee2e2\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 3</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g4\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23c7d2fe\'/><stop stop-color=\'%23a7f3d0\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g4)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'395\' cy=\'225\' r=\'88\'/><path d=\'M275 420q120-65 240 0v120H275z\'/><path d=\'M315 260c18 26 150 32 180 0 12-20 5-50-8-76 30 12 58 45 70 86 6 18 6 40 6 60-88 0-248 0-330 0 0-20-2-42 6-60 14-31 40-58 70-76-13 26-20 56 6 66z\' fill=\'%23eef2ff\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 4</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 5 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g5\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%2393c5fd\'/><stop stop-color=\'%23fbcfe8\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g5)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'405\' cy=\'230\' r=\'92\'/><path d=\'M285 420q120-75 240 0v120H285z\'/><path d=\'M320 265c22 30 150 35 180 0 12-18 8-44-3-70 28 14 58 50 70 90 6 22 6 38 6 58-88 0-248 0-330 0 0-20 0-36 6-58 12-40 42-76 70-90-12 26-16 52 1 70z\' fill=\'%23e5e7eb\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 5</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 6 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g6\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23fde68a\'/><stop stop-color=\'%23a7f3d0\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g6)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'400\' cy=\'230\' r=\'90\'/><path d=\'M280 420q120-80 240 0v120H280z\'/><path d=\'M320 265c12 24 150 30 180 0 10-20 6-44-8-70 30 12 60 46 74 84 7 18 7 38 7 58-88 0-248 0-330 0 0-20 0-40 7-58 14-38 44-72 74-84-14 26-18 50-4 70z\' fill=\'%23fff1b1\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 6</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 7 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g7\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23fecaca\'/><stop stop-color=\'%23bfdbfe\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g7)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'405\' cy=\'225\' r=\'88\'/><path d=\'M285 420q120-70 240 0v120H285z\'/><path d=\'M318 258c18 24 152 32 182 0 10-18 8-44-4-66 28 12 56 44 70 82 6 18 8 40 8 60-92 0-252 0-340 0 0-20 2-42 8-60 10-28 38-62 70-82-12 22-15 48 6 66z\' fill=\'%23fee2e2\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 7</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 8 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g8\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23ddd6fe\'/><stop stop-color=\'%23fbcfe8\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g8)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'400\' cy=\'225\' r=\'90\'/><path d=\'M280 420q120-60 240 0v120H280z\'/><path d=\'M315 260c18 28 150 30 182 0 12-18 8-42-6-64 32 12 62 44 76 82 6 16 8 38 8 58-92 0-252 0-340 0 0-20 2-42 8-58 14-38 44-70 76-82-14 22-18 46-8 64z\' fill=\'%23eef2ff\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 8</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 9 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g9\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23fde68a\'/><stop stop-color=\'%2393c5fd\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g9)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'398\' cy=\'228\' r=\'90\'/><path d=\'M278 420q120-70 240 0v120H278z\'/><path d=\'M314 262c16 26 152 30 182 0 10-16 10-42-4-64 30 12 60 44 76 80 6 18 8 40 8 60-94 0-254 0-342 0 0-20 2-42 8-60 16-36 46-68 80-80-14 22-18 48-8 64z\' fill=\'%23fff7cc\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 9</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
-            <!-- Card 10 -->
-            <div class="card">
-              <div class="thumb" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'><defs><linearGradient id=\'g10\' x1=\'0\' x2=\'1\' y1=\'0\' y2=\'1\'><stop stop-color=\'%23bfdbfe\'/><stop stop-color=\'%23fecaca\' offset=\'1\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g10)\'/><g fill=\'%23fff\' opacity=\'0.92\'><circle cx=\'404\' cy=\'230\' r=\'92\'/><path d=\'M284 420q120-80 240 0v120H284z\'/><path d=\'M320 266c20 26 150 30 180 0 12-18 10-44-6-70 34 16 64 50 78 90 6 18 8 38 8 58-92 0-252 0-340 0 0-20 2-40 8-58 14-40 44-74 78-90-16 26-18 52-8 70z\' fill=\'%23fde2e2\'/></g></svg>')"></div>
-              <div class="caption"><span class="captext">Girl Preview 10</span><a class="btn dl" href="#" target="_blank" rel="nofollow noopener">Download Now</a></div>
-            </div>
-
+  <header>
+    <span>TharkiBazaar</span>
+  </header>
+  <main class="page">
+    <section class="panel">
+      <div id="slot-top" class="ad-slot" style="min-height:90px;">
+        <span>Advertisement</span>
+      </div>
+    </section>
+    <div class="layout">
+      <aside class="sidebar-left">
+        <div class="panel">
+          <div id="slot-left-primary" class="ad-slot" style="min-height:600px;">
+            <span>Advertisement</span>
           </div>
         </div>
-
-        <!-- Under gallery ads: 468x60/728x90 rotation + Native widget fixed --> 468x60/728x90 rotation + Native widget fixed -->
-        <div class="box" style="margin-top:12px"><div id="slot-under-1" class="ad-slot" style="min-height:60px"></div></div>
-        <div class="box" style="margin-top:12px">
-          <script async data-cfasync="false" src="https://pl27734286.revenuecpmgate.com/2e5cb186c4b38f8965debe7933cde6dd/invoke.js"></script>
-          <div id="container-2e5cb186c4b38f8965debe7933cde6dd"></div>
+        <div class="panel">
+          <div id="slot-left-secondary" class="ad-slot" style="min-height:600px;">
+            <span>Advertisement</span>
+          </div>
         </div>
-        <div class="box" style="margin-top:12px"><div id="slot-under-2" class="ad-slot" style="min-height:90px"></div></div>
+      </aside>
+      <section class="main-column">
+        <div class="panel">
+          <div class="gallery">
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g1' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fef3c7'/><stop offset='1' stop-color='%23fca5a5'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g1)'/><ellipse cx='320' cy='175' rx='88' ry='110' fill='%23ffffff' fill-opacity='0.82'/><path d='M160 440 C220 320 420 320 480 440 V560 H160 Z' fill='%23ffffff' fill-opacity='0.78'/><circle cx='250' cy='150' r='46' fill='%23ffffff' fill-opacity='0.35'/></svg>" alt="Blurred female silhouette preview 1" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 01</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g2' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ede9fe'/><stop offset='1' stop-color='%2393c5fd'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g2)'/><ellipse cx='320' cy='180' rx='82' ry='108' fill='%23ffffff' fill-opacity='0.78'/><path d='M150 430 C210 310 430 310 490 430 V560 H150 Z' fill='%23ffffff' fill-opacity='0.75'/><circle cx='360' cy='150' r='40' fill='%23ffffff' fill-opacity='0.32'/></svg>" alt="Blurred female silhouette preview 2" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 02</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g3' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23cffafe'/><stop offset='1' stop-color='%23a5b4fc'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g3)'/><ellipse cx='320' cy='178' rx='90' ry='118' fill='%23ffffff' fill-opacity='0.8'/><path d='M140 445 C210 305 430 305 500 445 V560 H140 Z' fill='%23ffffff' fill-opacity='0.74'/><circle cx='280' cy='150' r='50' fill='%23ffffff' fill-opacity='0.3'/></svg>" alt="Blurred female silhouette preview 3" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 03</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g4' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fee2e2'/><stop offset='1' stop-color='%23fbcfe8'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g4)'/><ellipse cx='320' cy='170' rx='86' ry='106' fill='%23ffffff' fill-opacity='0.81'/><path d='M170 438 C240 320 400 320 470 438 V560 H170 Z' fill='%23ffffff' fill-opacity='0.76'/><circle cx='340' cy='150' r='52' fill='%23ffffff' fill-opacity='0.28'/></svg>" alt="Blurred female silhouette preview 4" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 04</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g5' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fef9c3'/><stop offset='1' stop-color='%23bef264'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g5)'/><ellipse cx='320' cy='165' rx='84' ry='104' fill='%23ffffff' fill-opacity='0.8'/><path d='M175 440 C240 305 400 305 465 440 V560 H175 Z' fill='%23ffffff' fill-opacity='0.76'/><circle cx='300' cy='150' r='48' fill='%23ffffff' fill-opacity='0.3'/></svg>" alt="Blurred female silhouette preview 5" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 05</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g6' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fee2f2'/><stop offset='1' stop-color='%23e9d5ff'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g6)'/><ellipse cx='320' cy='175' rx='90' ry='112' fill='%23ffffff' fill-opacity='0.83'/><path d='M165 442 C235 310 405 310 475 442 V560 H165 Z' fill='%23ffffff' fill-opacity='0.75'/><circle cx='370' cy='155' r='44' fill='%23ffffff' fill-opacity='0.3'/></svg>" alt="Blurred female silhouette preview 6" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 06</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g7' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23bae6fd'/><stop offset='1' stop-color='%23fbcfe8'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g7)'/><ellipse cx='320' cy='172' rx='86' ry='108' fill='%23ffffff' fill-opacity='0.82'/><path d='M180 438 C240 315 400 315 460 438 V560 H180 Z' fill='%23ffffff' fill-opacity='0.76'/><circle cx='300' cy='152' r='48' fill='%23ffffff' fill-opacity='0.28'/></svg>" alt="Blurred female silhouette preview 7" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 07</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g8' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23f1f5f9'/><stop offset='1' stop-color='%23c7d2fe'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g8)'/><ellipse cx='320' cy='170' rx='90' ry='116' fill='%23ffffff' fill-opacity='0.82'/><path d='M165 445 C235 305 405 305 475 445 V560 H165 Z' fill='%23ffffff' fill-opacity='0.75'/><circle cx='360' cy='150' r='50' fill='%23ffffff' fill-opacity='0.3'/></svg>" alt="Blurred female silhouette preview 8" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 08</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g9' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fecdd3'/><stop offset='1' stop-color='%23c4b5fd'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g9)'/><ellipse cx='320' cy='172' rx='88' ry='110' fill='%23ffffff' fill-opacity='0.83'/><path d='M170 440 C235 315 405 315 470 440 V560 H170 Z' fill='%23ffffff' fill-opacity='0.74'/><circle cx='330' cy='155' r='42' fill='%23ffffff' fill-opacity='0.28'/></svg>" alt="Blurred female silhouette preview 9" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 09</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g10' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fde68a'/><stop offset='1' stop-color='%23bbf7d0'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g10)'/><ellipse cx='320' cy='175' rx='84' ry='108' fill='%23ffffff' fill-opacity='0.8'/><path d='M180 442 C240 312 400 312 460 442 V560 H180 Z' fill='%23ffffff' fill-opacity='0.75'/><circle cx='350' cy='152' r='44' fill='%23ffffff' fill-opacity='0.28'/></svg>" alt="Blurred female silhouette preview 10" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 10</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-under-1" class="ad-slot" style="min-height:60px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel under-gallery">
+          <div id="slot-under-2" class="ad-slot" style="min-height:90px;">
+            <span>Advertisement</span>
+          </div>
+          <div class="native">
+            <script async data-cfasync="false" src="https://pl27734286.revenuecpmgate.com/2e5cb186c4b38f8965debe7933cde6dd/invoke.js"></script>
+            <div id="container-2e5cb186c4b38f8965debe7933cde6dd"></div>
+          </div>
+        </div>
+        <div class="panel mobile-ads">
+          <div id="slot-mobile-1" class="ad-slot">
+            <span>Advertisement</span>
+          </div>
+          <div id="slot-mobile-2" class="ad-slot">
+            <span>Advertisement</span>
+          </div>
+        </div>
       </section>
-
-      <!-- RIGHT ads (rotate 300x250/320x50) -->
-      <aside class="right">
-        <div class="box" style="margin-bottom:12px"><div id="slot-right-1" class="ad-slot" style="min-height:250px"></div></div>
-        <div class="box"><div id="slot-right-2" class="ad-slot" style="min-height:50px"></div></div>
+      <aside class="sidebar-right">
+        <div class="panel">
+          <div id="slot-right-primary" class="ad-slot" style="min-height:250px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-right-secondary" class="ad-slot" style="min-height:250px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
       </aside>
     </div>
-
-    <!-- MOBILE‑ONLY extra rows (rotate) -->
-    <div class="monly" style="margin-top:12px">
-      <div class="box" style="margin-bottom:12px"><div id="slot-m-1" class="ad-slot" style="min-height:250px"></div></div>
-      <div class="box" style="margin-bottom:12px"><div id="slot-m-2" class="ad-slot" style="min-height:50px"></div></div>
-      <div class="box"><div id="slot-m-3" class="ad-slot" style="min-height:90px"></div></div>
+  </main>
+  <div class="sticky-footer">
+    <div class="sticky-inner">
+      <div id="slot-bottom" class="ad-slot" style="min-height:60px;">
+        <span>Advertisement</span>
+      </div>
     </div>
   </div>
-
-  <!-- BOTTOM sticky: rotates 320x50/468x60 -->
-  <div class="bottom"><div class="inner"><div class="box"><div id="slot-bottom" class="ad-slot" style="min-height:50px"></div></div></div></div>
-
-  <!-- Global monetization: Popunder + Social Bar -->
   <script src="https://pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js"></script>
   <script src="https://pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js"></script>
-
   <script>
-    // ===== Programmatic ad loader (safe, no closing tag problem) =====
-    function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
-    function loadHP(target, key, w, h){
-      clearNode(target);
-      const s1 = document.createElement('script');
-      s1.type = 'text/javascript';
-      s1.text = `var atOptions={key:"${key}",format:"iframe",height:${h},width:${w},params:{}};`;
-      const s2 = document.createElement('script');
-      s2.type = 'text/javascript';
-      s2.src = 'https://www.highperformanceformat.com/'+key+'/invoke.js';
-      target.appendChild(s1); target.appendChild(s2);
-    }
+    (function(){
+      const TERABOX_URL = 'https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA';
+      const downloadButtons = document.querySelectorAll('.dl');
+      downloadButtons.forEach((btn, idx) => {
+        btn.href = TERABOX_URL;
+        btn.dataset.index = String(idx + 1);
+      });
 
-    // ===== Rotation config =====
-    const ROTATE_MS = 25000; // 25s rotate
-    const K = {
-      k300x250:'72b7232ca3ae40f63836f3c472360365',
-      k728x90 :'518bb62c4fe828a47ab0530ed37ad2bf',
-      k160x600:'d36c2f4dfc3863469f3b2132607617c6',
-      k160x300:'9ab75744061e372e002498c8b7270b8e',
-      k468x60 :'4e4e54cb42e36c5eb4dc8ab45feeefb9',
-      k320x50 :'b7193586f4106b807d27a90a71d22c37'
-    };
+      function clearNode(node){
+        while(node.firstChild){
+          node.removeChild(node.firstChild);
+        }
+      }
 
-    const plan = {
-      'slot-top'   :[(el)=>loadHP(el,K.k728x90,728,90),(el)=>loadHP(el,K.k468x60,468,60)],
-      'slot-left-1':[(el)=>loadHP(el,K.k160x600,160,600),(el)=>loadHP(el,K.k160x300,160,300)],
-      'slot-left-2':[(el)=>loadHP(el,K.k160x300,160,300),(el)=>loadHP(el,K.k160x600,160,600)],
-      'slot-right-1':[(el)=>loadHP(el,K.k300x250,300,250),(el)=>loadHP(el,K.k320x50,320,50)],
-      'slot-right-2':[(el)=>loadHP(el,K.k320x50,320,50),(el)=>loadHP(el,K.k300x250,300,250)],
-      'slot-under-1':[(el)=>loadHP(el,K.k468x60,468,60),(el)=>loadHP(el,K.k320x50,320,50)],
-      'slot-under-2':[(el)=>loadHP(el,K.k728x90,728,90),(el)=>loadHP(el,K.k468x60,468,60)],
-      'slot-m-1'   :[(el)=>loadHP(el,K.k300x250,300,250),(el)=>loadHP(el,K.k320x50,320,50)],
-      'slot-m-2'   :[(el)=>loadHP(el,K.k320x50,320,50),(el)=>loadHP(el,K.k468x60,468,60)],
-      'slot-m-3'   :[(el)=>loadHP(el,K.k728x90,728,90),(el)=>loadHP(el,K.k320x50,320,50)],
-      'slot-bottom':[(el)=>loadHP(el,K.k320x50,320,50),(el)=>loadHP(el,K.k468x60,468,60)]
-    };
+      function loadHP(target, key, width, height){
+        if(!target) return;
+        clearNode(target);
+        const varScript = document.createElement('script');
+        varScript.text = 'var atOptions={key:"' + key + '",format:"iframe",height:' + height + ',width:' + width + ',params:{}};';
+        const loader = document.createElement('script');
+        loader.src = 'https://www.highperformanceformat.com/' + key + '/invoke.js';
+        target.appendChild(varScript);
+        target.appendChild(loader);
+      }
 
-    const idx={};
-    function rotate(id){ const el=document.getElementById(id); if(!el) return; const arr=plan[id]; if(!arr) return; idx[id]=(idx[id]??-1)+1; if(idx[id]>=arr.length) idx[id]=0; arr[idx[id]](el); }
-    Object.keys(plan).forEach(rotate);
-    setInterval(()=>{ Object.keys(plan).forEach(rotate); }, ROTATE_MS);
+      const SIZES = {
+        k300x250:'72b7232ca3ae40f63836f3c472360365',
+        k728x90:'518bb62c4fe828a47ab0530ed37ad2bf',
+        k160x600:'d36c2f4dfc3863469f3b2132607617c6',
+        k160x300:'9ab75744061e372e002498c8b7270b8e',
+        k468x60:'4e4e54cb42e36c5eb4dc8ab45feeefb9',
+        k320x50:'b7193586f4106b807d27a90a71d22c37'
+      };
 
-    // ===== One Terabox folder for ALL download buttons =====
-    const TERABOX_URL = 'https://1024terabox.com/s/1PfOK7auKQ_ynPhfgWYjeqA';
-    document.querySelectorAll('.dl').forEach(a=>{ a.href = TERABOX_URL; });
+      const plan = {
+        'slot-top': [
+          el => loadHP(el, SIZES.k728x90, 728, 90),
+          el => loadHP(el, SIZES.k468x60, 468, 60)
+        ],
+        'slot-left-primary': [
+          el => loadHP(el, SIZES.k160x600, 160, 600),
+          el => loadHP(el, SIZES.k160x300, 160, 300)
+        ],
+        'slot-left-secondary': [
+          el => loadHP(el, SIZES.k160x300, 160, 300),
+          el => loadHP(el, SIZES.k160x600, 160, 600)
+        ],
+        'slot-right-primary': [
+          el => loadHP(el, SIZES.k300x250, 300, 250),
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
+        'slot-right-secondary': [
+          el => loadHP(el, SIZES.k320x50, 320, 50),
+          el => loadHP(el, SIZES.k300x250, 300, 250)
+        ],
+        'slot-under-1': [
+          el => loadHP(el, SIZES.k468x60, 468, 60),
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
+        'slot-under-2': [
+          el => loadHP(el, SIZES.k728x90, 728, 90),
+          el => loadHP(el, SIZES.k468x60, 468, 60)
+        ],
+        'slot-mobile-1': [
+          el => loadHP(el, SIZES.k300x250, 300, 250),
+          el => loadHP(el, SIZES.k320x50, 320, 50),
+          el => loadHP(el, SIZES.k728x90, 728, 90)
+        ],
+        'slot-mobile-2': [
+          el => loadHP(el, SIZES.k320x50, 320, 50),
+          el => loadHP(el, SIZES.k300x250, 300, 250),
+          el => loadHP(el, SIZES.k728x90, 728, 90)
+        ],
+        'slot-bottom': [
+          el => loadHP(el, SIZES.k320x50, 320, 50),
+          el => loadHP(el, SIZES.k468x60, 468, 60)
+        ]
+      };
+
+      const ACTIVE_INDEX = {};
+      function rotateSlot(id){
+        const el = document.getElementById(id);
+        const handlers = plan[id];
+        if(!el || !handlers || handlers.length === 0){ return; }
+        const next = ((ACTIVE_INDEX[id] ?? -1) + 1) % handlers.length;
+        ACTIVE_INDEX[id] = next;
+        try{
+          handlers[next](el);
+        }catch(err){
+          console.error('Ad load error for', id, err);
+        }
+      }
+
+      Object.keys(plan).forEach(rotateSlot);
+      setInterval(() => {
+        Object.keys(plan).forEach(rotateSlot);
+      }, 25000);
+
+      const GA_ID = 'G-XXXXXXX';
+      if(GA_ID && GA_ID !== 'G-XXXXXXX'){
+        const gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+        document.head.appendChild(gaScript);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA_ID);
+      }
+
+      function sendGA(name, params){
+        if(typeof window.gtag === 'function'){
+          window.gtag('event', name, params || {});
+        }
+      }
+
+      sendGA('page_visit', { page: location.pathname || 'index.html' });
+
+      downloadButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sendGA('download_click', { item_index: Number(btn.dataset.index) || 0 });
+        });
+      });
+
+      document.addEventListener('click', evt => {
+        const anchor = evt.target.closest('a[href]');
+        if(!anchor){ return; }
+        try{
+          const url = new URL(anchor.href, location.href);
+          if(url.origin !== location.origin){
+            sendGA('outbound_click', { href: anchor.href });
+          }
+        }catch(err){}
+      });
+
+      const seenSlots = new Set();
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting && !seenSlots.has(entry.target.id)){
+            seenSlots.add(entry.target.id);
+            sendGA('ad_impression', { slot_id: entry.target.id });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -20% 0px' });
+
+      document.querySelectorAll('.ad-slot').forEach(slot => {
+        observer.observe(slot);
+        slot.addEventListener('click', () => {
+          sendGA('ad_slot_click_proxy', { slot_id: slot.id });
+        }, { passive: true, capture: true });
+      });
+    })();
   </script>
 </body>
 </html>
-
