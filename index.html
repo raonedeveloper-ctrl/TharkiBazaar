@@ -103,7 +103,7 @@
       content:"";
       position:absolute;
       inset:0;
-      background:linear-gradient(180deg,rgba(15,23,42,0.18),rgba(15,23,42,0.45));
+      background:linear-gradient(180deg,rgba(15,23,42,0.12),rgba(15,23,42,0.32));
       pointer-events:none;
     }
     @supports (aspect-ratio: 3 / 4){
@@ -117,8 +117,8 @@
       height:100%;
       object-fit:cover;
       object-position:center top;
-      filter:blur(16px);
-      transform:scale(1.12);
+      filter:blur(12px);
+      transform:scale(1.08);
       pointer-events:none;
       user-select:none;
     }
@@ -336,6 +336,64 @@
     .admin-toast.show{
       opacity:0.95;
       transform:translateY(0);
+    }
+    .floating-ad{
+      position:fixed;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%) scale(0.94);
+      width:min(90vw,360px);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:0 24px 50px rgba(15,23,42,0.35);
+      padding:18px 18px 14px;
+      display:none;
+      opacity:0;
+      z-index:620;
+    }
+    .floating-ad.show{
+      display:block;
+      animation:floatingIn 0.35s ease forwards;
+    }
+    @keyframes floatingIn{
+      from{opacity:0;transform:translate(-50%,calc(-50% + 18px)) scale(0.92);}
+      to{opacity:1;transform:translate(-50%,-50%) scale(1);}
+    }
+    .floating-ad .floating-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+      gap:12px;
+    }
+    .floating-ad .floating-head span{
+      font-size:0.85rem;
+      letter-spacing:0.08em;
+      color:var(--muted);
+      text-transform:uppercase;
+    }
+    .floating-ad button{
+      border:none;
+      background:rgba(15,23,42,0.08);
+      color:var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:0.75rem;
+      letter-spacing:0.08em;
+      transition:background 0.2s ease,color 0.2s ease;
+    }
+    .floating-ad button:hover{
+      background:rgba(37,99,235,0.12);
+      color:var(--text);
+    }
+    @media(max-width:640px){
+      .floating-ad{
+        top:52%;
+        border-radius:16px;
+        padding:16px;
+      }
     }
     @media (max-width:1100px){
       .layout{
@@ -638,6 +696,15 @@
       </div>
     </div>
   </div>
+  <div id="floating-ad" class="floating-ad" hidden>
+    <div class="floating-head">
+      <span>Sponsored</span>
+      <button type="button" id="floating-close">Close</button>
+    </div>
+    <div id="slot-floating" class="ad-slot" style="min-height:250px;">
+      <span>Advertisement</span>
+    </div>
+  </div>
   <div id="admin-toast" class="admin-toast" role="status" aria-live="assertive" hidden></div>
   <script src="https://pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js"></script>
   <script src="https://pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js"></script>
@@ -656,6 +723,8 @@
       const statsPanel = document.getElementById('stats-panel');
       const adminIndicator = document.getElementById('admin-indicator');
       const adminToast = document.getElementById('admin-toast');
+      const floatingAd = document.getElementById('floating-ad');
+      const floatingClose = document.getElementById('floating-close');
       let adminToastTimer = null;
       let adminToastHideTimer = null;
 
@@ -773,6 +842,7 @@
       }
 
       const STORAGE_KEY = 'tharkibazaar.metrics.v1';
+      const FLOATING_DISMISS_KEY = 'tharkibazaar.floating.dismissed';
       function createBlankStats(){
         return {
           visits:0,
@@ -815,6 +885,20 @@
       }
 
       const stats = loadStats();
+
+      function rememberFloatingDismissed(){
+        try{
+          sessionStorage.setItem(FLOATING_DISMISS_KEY, '1');
+        }catch(err){}
+      }
+
+      function isFloatingDismissed(){
+        try{
+          return sessionStorage.getItem(FLOATING_DISMISS_KEY) === '1';
+        }catch(err){
+          return false;
+        }
+      }
 
       function persistStats(){
         if(!storageAvailable){ return; }
@@ -1001,6 +1085,26 @@
         });
       }
 
+      if(floatingClose){
+        floatingClose.addEventListener('click', () => {
+          if(floatingAd){
+            floatingAd.classList.remove('show');
+            setTimeout(() => {
+              floatingAd.hidden = true;
+            }, 260);
+          }
+          rememberFloatingDismissed();
+        });
+      }
+
+      function showFloatingAd(){
+        if(!floatingAd || isFloatingDismissed()){ return; }
+        floatingAd.hidden = false;
+        requestAnimationFrame(() => {
+          floatingAd.classList.add('show');
+        });
+      }
+
       renderStats();
       updateStats(s => { s.visits = (s.visits || 0) + 1; });
 
@@ -1091,6 +1195,10 @@
           el => loadHP(el, SIZES.k300x250, 300, 250),
           el => loadHP(el, SIZES.k728x90, 728, 90)
         ],
+        'slot-floating': [
+          el => loadHP(el, SIZES.k300x250, 300, 250),
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
         'slot-bottom': [
           el => loadHP(el, SIZES.k320x50, 320, 50),
           el => loadHP(el, SIZES.k468x60, 468, 60)
@@ -1117,6 +1225,7 @@
 
       refreshAllAds();
       setInterval(refreshAllAds, 25000);
+      setTimeout(showFloatingAd, 6000);
 
       const GA_ID = 'G-XXXXXXX';
       if(GA_ID && GA_ID !== 'G-XXXXXXX'){
