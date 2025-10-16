@@ -55,7 +55,7 @@
     }
     .layout{
       display:grid;
-      grid-template-columns:220px minmax(0,1fr) 280px;
+      grid-template-columns:210px minmax(0,1fr) 320px;
       gap:20px;
       align-items:start;
     }
@@ -203,13 +203,6 @@
       margin:0 auto;
       border:0;
     }
-    .under-gallery .native{margin-top:12px;}
-    .mobile-ads{
-      display:none;
-      gap:12px;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-    }
-    .mobile-ads .ad-slot{min-height:250px;}
     .stats-panel{
       display:flex;
       flex-direction:column;
@@ -337,82 +330,36 @@
       opacity:0.95;
       transform:translateY(0);
     }
-    .floating-ad{
-      position:fixed;
-      left:50%;
-      top:50%;
-      transform:translate(-50%,-50%) scale(0.94);
-      width:min(90vw,360px);
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:0 24px 50px rgba(15,23,42,0.35);
-      padding:18px 18px 14px;
-      display:none;
-      opacity:0;
-      z-index:620;
-    }
-    .floating-ad.show{
-      display:block;
-      animation:floatingIn 0.35s ease forwards;
-    }
-    @keyframes floatingIn{
-      from{opacity:0;transform:translate(-50%,calc(-50% + 18px)) scale(0.92);}
-      to{opacity:1;transform:translate(-50%,-50%) scale(1);}
-    }
-    .floating-ad .floating-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:12px;
-      gap:12px;
-    }
-    .floating-ad .floating-head span{
-      font-size:0.85rem;
-      letter-spacing:0.08em;
-      color:var(--muted);
-      text-transform:uppercase;
-    }
-    .floating-ad button{
-      border:none;
-      background:rgba(15,23,42,0.08);
-      color:var(--muted);
-      padding:6px 10px;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:0.75rem;
-      letter-spacing:0.08em;
-      transition:background 0.2s ease,color 0.2s ease;
-    }
-    .floating-ad button:hover{
-      background:rgba(37,99,235,0.12);
-      color:var(--text);
-    }
-    @media(max-width:640px){
-      .floating-ad{
-        top:52%;
-        border-radius:16px;
-        padding:16px;
-      }
-    }
     @media (max-width:1100px){
       .layout{
-        grid-template-columns:220px minmax(0,1fr);
+        grid-template-columns:minmax(0,1fr);
+        gap:16px;
       }
-      .sidebar-right{display:none;}
+      .sidebar-left,
+      .sidebar-right{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+        gap:16px;
+        order:2;
+      }
+      .main-column{order:1;}
     }
     @media (max-width:780px){
       .layout{grid-template-columns:1fr;}
       .sidebar-left,
-      .sidebar-right{display:none;}
+      .sidebar-right{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        gap:14px;
+        order:2;
+      }
+      .main-column{order:1;}
       .panel{padding:18px;}
-      .mobile-ads{display:grid;}
       .gallery{grid-template-columns:repeat(2,minmax(0,1fr));}
       body{padding-bottom:140px;}
       .stats-header h2{font-size:1rem;}
     }
     @media (max-width:520px){
-      .mobile-ads{grid-template-columns:1fr;}
       .btn{width:100%;}
     }
     @media (min-width:768px){
@@ -429,11 +376,6 @@
   </header>
   <div id="admin-indicator" class="admin-indicator" hidden>ADMIN MODE</div>
   <main class="page">
-    <section class="panel">
-      <div id="slot-top" class="ad-slot" style="min-height:90px;">
-        <span>Advertisement</span>
-      </div>
-    </section>
     <section id="stats-panel" class="panel stats-panel" aria-live="polite" hidden>
       <div class="stats-header">
         <h2>Activity Snapshot</h2>
@@ -477,12 +419,27 @@
     <div class="layout">
       <aside class="sidebar-left">
         <div class="panel">
-          <div id="slot-left-primary" class="ad-slot" style="min-height:600px;">
+          <div id="slot-left-1" class="ad-slot" style="min-height:600px;">
             <span>Advertisement</span>
           </div>
         </div>
         <div class="panel">
-          <div id="slot-left-secondary" class="ad-slot" style="min-height:600px;">
+          <div id="slot-left-2" class="ad-slot" style="min-height:300px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-left-3" class="ad-slot" style="min-height:600px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-left-4" class="ad-slot" style="min-height:300px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-left-5" class="ad-slot" style="min-height:600px;">
             <span>Advertisement</span>
           </div>
         </div>
@@ -652,59 +609,36 @@
             </div>
           </div>
         </div>
-        <div class="panel">
-          <div id="slot-under-1" class="ad-slot" style="min-height:60px;">
-            <span>Advertisement</span>
-          </div>
-        </div>
-        <div class="panel under-gallery">
-          <div id="slot-under-2" class="ad-slot" style="min-height:90px;">
-            <span>Advertisement</span>
-          </div>
-          <div class="native">
-            <script async data-cfasync="false" src="https://pl27734286.revenuecpmgate.com/2e5cb186c4b38f8965debe7933cde6dd/invoke.js"></script>
-            <div id="container-2e5cb186c4b38f8965debe7933cde6dd"></div>
-          </div>
-        </div>
-        <div class="panel mobile-ads">
-          <div id="slot-mobile-1" class="ad-slot">
-            <span>Advertisement</span>
-          </div>
-          <div id="slot-mobile-2" class="ad-slot">
-            <span>Advertisement</span>
-          </div>
-        </div>
       </section>
       <aside class="sidebar-right">
         <div class="panel">
-          <div id="slot-right-primary" class="ad-slot" style="min-height:250px;">
+          <div id="slot-right-1" class="ad-slot" style="min-height:250px;">
             <span>Advertisement</span>
           </div>
         </div>
         <div class="panel">
-          <div id="slot-right-secondary" class="ad-slot" style="min-height:250px;">
+          <div id="slot-right-2" class="ad-slot" style="min-height:120px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-right-3" class="ad-slot" style="min-height:250px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-right-4" class="ad-slot" style="min-height:120px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-right-5" class="ad-slot" style="min-height:250px;">
             <span>Advertisement</span>
           </div>
         </div>
       </aside>
     </div>
   </main>
-  <div class="sticky-footer">
-    <div class="sticky-inner">
-      <div id="slot-bottom" class="ad-slot" style="min-height:60px;">
-        <span>Advertisement</span>
-      </div>
-    </div>
-  </div>
-  <div id="floating-ad" class="floating-ad" hidden>
-    <div class="floating-head">
-      <span>Sponsored</span>
-      <button type="button" id="floating-close">Close</button>
-    </div>
-    <div id="slot-floating" class="ad-slot" style="min-height:250px;">
-      <span>Advertisement</span>
-    </div>
-  </div>
   <div id="admin-toast" class="admin-toast" role="status" aria-live="assertive" hidden></div>
   <script src="https://pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js"></script>
   <script src="https://pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js"></script>
@@ -723,8 +657,6 @@
       const statsPanel = document.getElementById('stats-panel');
       const adminIndicator = document.getElementById('admin-indicator');
       const adminToast = document.getElementById('admin-toast');
-      const floatingAd = document.getElementById('floating-ad');
-      const floatingClose = document.getElementById('floating-close');
       let adminToastTimer = null;
       let adminToastHideTimer = null;
 
@@ -842,7 +774,6 @@
       }
 
       const STORAGE_KEY = 'tharkibazaar.metrics.v1';
-      const FLOATING_DISMISS_KEY = 'tharkibazaar.floating.dismissed';
       function createBlankStats(){
         return {
           visits:0,
@@ -885,20 +816,6 @@
       }
 
       const stats = loadStats();
-
-      function rememberFloatingDismissed(){
-        try{
-          sessionStorage.setItem(FLOATING_DISMISS_KEY, '1');
-        }catch(err){}
-      }
-
-      function isFloatingDismissed(){
-        try{
-          return sessionStorage.getItem(FLOATING_DISMISS_KEY) === '1';
-        }catch(err){
-          return false;
-        }
-      }
 
       function persistStats(){
         if(!storageAvailable){ return; }
@@ -1085,26 +1002,6 @@
         });
       }
 
-      if(floatingClose){
-        floatingClose.addEventListener('click', () => {
-          if(floatingAd){
-            floatingAd.classList.remove('show');
-            setTimeout(() => {
-              floatingAd.hidden = true;
-            }, 260);
-          }
-          rememberFloatingDismissed();
-        });
-      }
-
-      function showFloatingAd(){
-        if(!floatingAd || isFloatingDismissed()){ return; }
-        floatingAd.hidden = false;
-        requestAnimationFrame(() => {
-          floatingAd.classList.add('show');
-        });
-      }
-
       renderStats();
       updateStats(s => { s.visits = (s.visits || 0) + 1; });
 
@@ -1157,51 +1054,35 @@
       };
 
       const plan = {
-        'slot-top': [
-          el => loadHP(el, SIZES.k728x90, 728, 90),
-          el => loadHP(el, SIZES.k468x60, 468, 60)
-        ],
-        'slot-left-primary': [
-          el => loadHP(el, SIZES.k160x600, 160, 600),
-          el => loadHP(el, SIZES.k160x300, 160, 300)
-        ],
-        'slot-left-secondary': [
-          el => loadHP(el, SIZES.k160x300, 160, 300),
+        'slot-left-1': [
           el => loadHP(el, SIZES.k160x600, 160, 600)
         ],
-        'slot-right-primary': [
-          el => loadHP(el, SIZES.k300x250, 300, 250),
-          el => loadHP(el, SIZES.k320x50, 320, 50)
+        'slot-left-2': [
+          el => loadHP(el, SIZES.k160x300, 160, 300)
         ],
-        'slot-right-secondary': [
-          el => loadHP(el, SIZES.k320x50, 320, 50),
+        'slot-left-3': [
+          el => loadHP(el, SIZES.k160x600, 160, 600)
+        ],
+        'slot-left-4': [
+          el => loadHP(el, SIZES.k160x300, 160, 300)
+        ],
+        'slot-left-5': [
+          el => loadHP(el, SIZES.k160x600, 160, 600)
+        ],
+        'slot-right-1': [
           el => loadHP(el, SIZES.k300x250, 300, 250)
         ],
-        'slot-under-1': [
-          el => loadHP(el, SIZES.k468x60, 468, 60),
+        'slot-right-2': [
           el => loadHP(el, SIZES.k320x50, 320, 50)
         ],
-        'slot-under-2': [
-          el => loadHP(el, SIZES.k728x90, 728, 90),
-          el => loadHP(el, SIZES.k468x60, 468, 60)
+        'slot-right-3': [
+          el => loadHP(el, SIZES.k300x250, 300, 250)
         ],
-        'slot-mobile-1': [
-          el => loadHP(el, SIZES.k300x250, 300, 250),
-          el => loadHP(el, SIZES.k320x50, 320, 50),
-          el => loadHP(el, SIZES.k728x90, 728, 90)
-        ],
-        'slot-mobile-2': [
-          el => loadHP(el, SIZES.k320x50, 320, 50),
-          el => loadHP(el, SIZES.k300x250, 300, 250),
-          el => loadHP(el, SIZES.k728x90, 728, 90)
-        ],
-        'slot-floating': [
-          el => loadHP(el, SIZES.k300x250, 300, 250),
+        'slot-right-4': [
           el => loadHP(el, SIZES.k320x50, 320, 50)
         ],
-        'slot-bottom': [
-          el => loadHP(el, SIZES.k320x50, 320, 50),
-          el => loadHP(el, SIZES.k468x60, 468, 60)
+        'slot-right-5': [
+          el => loadHP(el, SIZES.k300x250, 300, 250)
         ]
       };
 
@@ -1224,8 +1105,6 @@
       }
 
       refreshAllAds();
-      setInterval(refreshAllAds, 25000);
-      setTimeout(showFloatingAd, 6000);
 
       const GA_ID = 'G-XXXXXXX';
       if(GA_ID && GA_ID !== 'G-XXXXXXX'){
