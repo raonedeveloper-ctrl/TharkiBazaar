@@ -7,80 +7,118 @@
   <meta name="description" content="TharkiBazaar mobile-first landing page with blurred previews, Terabox downloads, and rotating ad placements.">
   <style>
     :root{
-      --bg:#f4f5f8;
-      --text:#101828;
+      --bg:#eef1f6;
+      --text:#0f172a;
       --card:#ffffff;
-      --line:#d0d5dd;
-      --muted:#667085;
+      --line:#d8dee9;
+      --muted:#5d6471;
       --button:#2563eb;
-      --button-hover:#1e4fc5;
+      --button-hover:#1d4ed8;
+      --pill:#e2e8f0;
+      --accent:#f1f5ff;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
     body{
       background:var(--bg);
       color:var(--text);
       font-family:"Segoe UI",Arial,sans-serif;
-      line-height:1.5;
-      padding-bottom:90px;
+      line-height:1.55;
+      padding-bottom:120px;
     }
     a{text-decoration:none;color:inherit;}
     header{
-      padding:24px 16px;
+      padding:26px 16px 14px;
       text-align:center;
       font-weight:800;
       font-size:clamp(1.8rem,2vw + 1rem,2.8rem);
       letter-spacing:0.08em;
     }
     header span{display:inline-block;}
+    [hidden]{display:none !important;}
     .page{
-      max-width:1280px;
+      max-width:1300px;
       margin:0 auto;
-      padding:0 16px 32px;
+      padding:0 20px 40px;
+      display:flex;
+      flex-direction:column;
+      gap:24px;
     }
     .panel{
       background:var(--card);
       border:1px solid var(--line);
-      border-radius:12px;
-      padding:16px;
-      margin-bottom:16px;
-      box-shadow:0 1px 2px rgba(16,24,40,0.04);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 24px rgba(15,23,42,0.05);
+    }
+    .panel:not(.stats-panel){
+      backdrop-filter:blur(2px);
     }
     .layout{
       display:grid;
       grid-template-columns:220px minmax(0,1fr) 280px;
-      gap:16px;
+      gap:20px;
       align-items:start;
     }
     .sidebar-left,
     .sidebar-right{
       display:flex;
       flex-direction:column;
-      gap:16px;
+      gap:20px;
+    }
+    .main-column{
+      display:flex;
+      flex-direction:column;
+      gap:20px;
     }
     .gallery{
       display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      gap:20px;
     }
     .card{
       border:1px solid var(--line);
-      border-radius:12px;
+      border-radius:16px;
       background:var(--card);
-      overflow:hidden;
       display:flex;
       flex-direction:column;
+      align-items:center;
+      gap:14px;
+      padding:16px;
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
+      overflow:hidden;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 18px 32px rgba(15,23,42,0.09);
     }
     .thumb{
       position:relative;
-      height:180px;
-      background:#cbd5f5;
+      background:var(--accent);
+      border-radius:14px;
+      overflow:hidden;
+      width:100%;
+      min-height:210px;
+    }
+    .thumb::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,rgba(15,23,42,0.18),rgba(15,23,42,0.45));
+      pointer-events:none;
+    }
+    @supports (aspect-ratio: 3 / 4){
+      .thumb{
+        min-height:auto;
+        aspect-ratio:3 / 4;
+      }
     }
     .thumb img{
       width:100%;
       height:100%;
       object-fit:cover;
-      filter:blur(10px);
-      transform:scale(1.08);
+      object-position:center top;
+      filter:blur(16px);
+      transform:scale(1.12);
       pointer-events:none;
       user-select:none;
     }
@@ -88,12 +126,13 @@
       position:absolute;
       top:10px;
       right:10px;
-      background:rgba(16,24,40,0.72);
+      background:rgba(15,23,42,0.78);
       border-radius:999px;
-      padding:6px;
+      padding:6px 7px;
       display:flex;
       align-items:center;
       justify-content:center;
+      box-shadow:0 6px 12px rgba(15,23,42,0.25);
     }
     .eye-off svg{
       display:block;
@@ -102,19 +141,24 @@
       fill:#f8fafc;
     }
     .card-body{
-      padding:14px;
+      padding:0;
       display:flex;
       flex-direction:column;
       gap:10px;
+      flex:1 1 auto;
+      align-items:center;
     }
     .card-title{
-      font-size:0.95rem;
+      font-size:0.9rem;
       font-weight:600;
       color:var(--muted);
+      letter-spacing:0.02em;
     }
     .card-actions{
       display:flex;
-      justify-content:flex-end;
+      justify-content:center;
+      margin-top:auto;
+      width:100%;
     }
     .btn{
       display:inline-flex;
@@ -123,9 +167,14 @@
       background:var(--button);
       color:#fff;
       font-weight:600;
-      border-radius:999px;
-      padding:9px 16px;
-      transition:background 0.2s ease;
+      border-radius:14px;
+      padding:10px 18px;
+      min-width:0;
+      width:100%;
+      max-width:200px;
+      font-size:0.95rem;
+      transition:background 0.2s ease, transform 0.2s ease;
+      box-shadow:0 8px 18px rgba(37,99,235,0.18);
     }
     .btn:hover{background:var(--button-hover);}
     .btn:focus-visible{
@@ -134,18 +183,25 @@
     }
     .ad-slot{
       width:100%;
-      min-height:50px;
-      border:1px dashed var(--line);
-      border-radius:10px;
-      background:#fbfcfe;
+      min-height:60px;
+      border:1px dashed #cbd5e1;
+      border-radius:14px;
+      background:var(--accent);
       display:flex;
       align-items:center;
       justify-content:center;
       overflow:hidden;
+      padding:8px;
     }
     .ad-slot span{
-      font-size:0.8rem;
+      font-size:0.85rem;
       color:var(--muted);
+      opacity:0.8;
+    }
+    .ad-slot iframe{
+      display:block;
+      margin:0 auto;
+      border:0;
     }
     .under-gallery .native{margin-top:12px;}
     .mobile-ads{
@@ -154,21 +210,132 @@
       grid-template-columns:repeat(2,minmax(0,1fr));
     }
     .mobile-ads .ad-slot{min-height:250px;}
+    .stats-panel{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+    .stats-header{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .stats-actions{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .stats-header h2{
+      font-size:1.1rem;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+      gap:16px;
+    }
+    .stats-card{
+      padding:14px 16px;
+      border-radius:14px;
+      background:var(--accent);
+      border:1px solid var(--line);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      }
+    .stats-card span{
+      font-size:0.75rem;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      color:var(--muted);
+    }
+    .stats-card strong{
+      font-size:1.4rem;
+      font-weight:700;
+    }
+    .stats-details{
+      border-radius:14px;
+      background:var(--pill);
+      padding:14px 16px;
+      font-size:0.9rem;
+      color:var(--muted);
+    }
+    .stats-details ul{
+      margin-top:10px;
+      list-style:disc;
+      padding-left:20px;
+      display:grid;
+      gap:6px;
+    }
+    .stats-actions button{
+      background:var(--button);
+      color:#fff;
+      border:none;
+      padding:9px 16px;
+      border-radius:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:background 0.2s ease, transform 0.2s ease;
+      box-shadow:0 6px 14px rgba(37,99,235,0.17);
+    }
+    .stats-actions button:hover{
+      background:var(--button-hover);
+      transform:translateY(-1px);
+    }
     .sticky-footer{
       position:fixed;
       bottom:0;
       left:0;
       right:0;
       z-index:200;
-      background:rgba(255,255,255,0.92);
+      background:rgba(255,255,255,0.95);
       border-top:1px solid var(--line);
       backdrop-filter:blur(4px);
-      padding:8px 0;
+      padding:10px 0;
     }
     .sticky-inner{
       max-width:540px;
       margin:0 auto;
       padding:0 16px;
+    }
+    .admin-indicator{
+      position:fixed;
+      top:16px;
+      right:16px;
+      background:rgba(29,78,216,0.95);
+      color:#fff;
+      padding:9px 18px;
+      border-radius:999px;
+      font-size:0.78rem;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      box-shadow:0 12px 24px rgba(29,78,216,0.28);
+      z-index:520;
+    }
+    .admin-toast{
+      position:fixed;
+      bottom:110px;
+      right:16px;
+      background:#0f172a;
+      color:#f8fafc;
+      padding:12px 18px;
+      border-radius:12px;
+      font-size:0.85rem;
+      box-shadow:0 12px 32px rgba(15,23,42,0.35);
+      opacity:0;
+      transform:translateY(12px);
+      transition:opacity 0.25s ease, transform 0.25s ease;
+      z-index:520;
+    }
+    .admin-toast.show{
+      opacity:0.95;
+      transform:translateY(0);
     }
     @media (max-width:1100px){
       .layout{
@@ -180,16 +347,21 @@
       .layout{grid-template-columns:1fr;}
       .sidebar-left,
       .sidebar-right{display:none;}
-      .panel{padding:14px;}
+      .panel{padding:18px;}
       .mobile-ads{display:grid;}
       .gallery{grid-template-columns:repeat(2,minmax(0,1fr));}
-      body{padding-bottom:110px;}
+      body{padding-bottom:140px;}
+      .stats-header h2{font-size:1rem;}
     }
-    @media (min-width:640px){
-      .gallery{grid-template-columns:repeat(3,minmax(0,1fr));}
+    @media (max-width:520px){
+      .mobile-ads{grid-template-columns:1fr;}
+      .btn{width:100%;}
     }
-    @media (min-width:1024px){
-      .gallery{grid-template-columns:repeat(5,minmax(0,1fr));}
+    @media (min-width:768px){
+      .gallery{grid-template-columns:repeat(3,minmax(190px,1fr));}
+    }
+    @media (min-width:1200px){
+      .gallery{grid-template-columns:repeat(5,minmax(190px,1fr));}
     }
   </style>
 </head>
@@ -197,10 +369,51 @@
   <header>
     <span>TharkiBazaar</span>
   </header>
+  <div id="admin-indicator" class="admin-indicator" hidden>ADMIN MODE</div>
   <main class="page">
     <section class="panel">
       <div id="slot-top" class="ad-slot" style="min-height:90px;">
         <span>Advertisement</span>
+      </div>
+    </section>
+    <section id="stats-panel" class="panel stats-panel" aria-live="polite" hidden>
+      <div class="stats-header">
+        <h2>Activity Snapshot</h2>
+        <div class="stats-actions">
+          <button type="button" id="stats-copy-link">Copy Smartlink</button>
+          <button type="button" id="stats-refresh-ads">Refresh Ads</button>
+          <button type="button" id="stats-export">Export JSON</button>
+          <button type="button" id="stats-reset">Reset Stats</button>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stats-card">
+          <span>Total Visits</span>
+          <strong data-stat="visits">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Downloads</span>
+          <strong data-stat="downloads">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Outbound Clicks</span>
+          <strong data-stat="outbound">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Ad Impressions</span>
+          <strong data-stat="impressions">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Ad Clicks</span>
+          <strong data-stat="adclicks">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Last Update</span>
+          <strong data-stat="updated">--</strong>
+        </div>
+      </div>
+      <div class="stats-details" id="stats-details">
+        No activity tracked yet. Interactions on this device will show up here.
       </div>
     </section>
     <div class="layout">
@@ -226,7 +439,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g1' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fef3c7'/><stop offset='1' stop-color='%23fca5a5'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g1)'/><ellipse cx='320' cy='175' rx='88' ry='110' fill='%23ffffff' fill-opacity='0.82'/><path d='M160 440 C220 320 420 320 480 440 V560 H160 Z' fill='%23ffffff' fill-opacity='0.78'/><circle cx='250' cy='150' r='46' fill='%23ffffff' fill-opacity='0.35'/></svg>" alt="Blurred female silhouette preview 1" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 01" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 01</div>
@@ -242,7 +455,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g2' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ede9fe'/><stop offset='1' stop-color='%2393c5fd'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g2)'/><ellipse cx='320' cy='180' rx='82' ry='108' fill='%23ffffff' fill-opacity='0.78'/><path d='M150 430 C210 310 430 310 490 430 V560 H150 Z' fill='%23ffffff' fill-opacity='0.75'/><circle cx='360' cy='150' r='40' fill='%23ffffff' fill-opacity='0.32'/></svg>" alt="Blurred female silhouette preview 2" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1524502397800-808dc0fef78d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 02" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 02</div>
@@ -258,7 +471,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g3' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23cffafe'/><stop offset='1' stop-color='%23a5b4fc'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g3)'/><ellipse cx='320' cy='178' rx='90' ry='118' fill='%23ffffff' fill-opacity='0.8'/><path d='M140 445 C210 305 430 305 500 445 V560 H140 Z' fill='%23ffffff' fill-opacity='0.74'/><circle cx='280' cy='150' r='50' fill='%23ffffff' fill-opacity='0.3'/></svg>" alt="Blurred female silhouette preview 3" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 03" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 03</div>
@@ -274,7 +487,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g4' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fee2e2'/><stop offset='1' stop-color='%23fbcfe8'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g4)'/><ellipse cx='320' cy='170' rx='86' ry='106' fill='%23ffffff' fill-opacity='0.81'/><path d='M170 438 C240 320 400 320 470 438 V560 H170 Z' fill='%23ffffff' fill-opacity='0.76'/><circle cx='340' cy='150' r='52' fill='%23ffffff' fill-opacity='0.28'/></svg>" alt="Blurred female silhouette preview 4" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 04" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 04</div>
@@ -290,7 +503,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g5' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fef9c3'/><stop offset='1' stop-color='%23bef264'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g5)'/><ellipse cx='320' cy='165' rx='84' ry='104' fill='%23ffffff' fill-opacity='0.8'/><path d='M175 440 C240 305 400 305 465 440 V560 H175 Z' fill='%23ffffff' fill-opacity='0.76'/><circle cx='300' cy='150' r='48' fill='%23ffffff' fill-opacity='0.3'/></svg>" alt="Blurred female silhouette preview 5" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 05" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 05</div>
@@ -306,7 +519,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g6' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fee2f2'/><stop offset='1' stop-color='%23e9d5ff'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g6)'/><ellipse cx='320' cy='175' rx='90' ry='112' fill='%23ffffff' fill-opacity='0.83'/><path d='M165 442 C235 310 405 310 475 442 V560 H165 Z' fill='%23ffffff' fill-opacity='0.75'/><circle cx='370' cy='155' r='44' fill='%23ffffff' fill-opacity='0.3'/></svg>" alt="Blurred female silhouette preview 6" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1502767089025-6572583495b0?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 06" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 06</div>
@@ -322,7 +535,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g7' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23bae6fd'/><stop offset='1' stop-color='%23fbcfe8'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g7)'/><ellipse cx='320' cy='172' rx='86' ry='108' fill='%23ffffff' fill-opacity='0.82'/><path d='M180 438 C240 315 400 315 460 438 V560 H180 Z' fill='%23ffffff' fill-opacity='0.76'/><circle cx='300' cy='152' r='48' fill='%23ffffff' fill-opacity='0.28'/></svg>" alt="Blurred female silhouette preview 7" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 07" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 07</div>
@@ -338,7 +551,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g8' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23f1f5f9'/><stop offset='1' stop-color='%23c7d2fe'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g8)'/><ellipse cx='320' cy='170' rx='90' ry='116' fill='%23ffffff' fill-opacity='0.82'/><path d='M165 445 C235 305 405 305 475 445 V560 H165 Z' fill='%23ffffff' fill-opacity='0.75'/><circle cx='360' cy='150' r='50' fill='%23ffffff' fill-opacity='0.3'/></svg>" alt="Blurred female silhouette preview 8" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 08" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 08</div>
@@ -354,7 +567,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g9' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fecdd3'/><stop offset='1' stop-color='%23c4b5fd'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g9)'/><ellipse cx='320' cy='172' rx='88' ry='110' fill='%23ffffff' fill-opacity='0.83'/><path d='M170 440 C235 315 405 315 470 440 V560 H170 Z' fill='%23ffffff' fill-opacity='0.74'/><circle cx='330' cy='155' r='42' fill='%23ffffff' fill-opacity='0.28'/></svg>" alt="Blurred female silhouette preview 9" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1521570167421-1afc82db536a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 09" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 09</div>
@@ -370,7 +583,7 @@
                     <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
                   </svg>
                 </span>
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'><defs><linearGradient id='g10' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23fde68a'/><stop offset='1' stop-color='%23bbf7d0'/></linearGradient></defs><rect width='640' height='480' fill='url(%23g10)'/><ellipse cx='320' cy='175' rx='84' ry='108' fill='%23ffffff' fill-opacity='0.8'/><path d='M180 442 C240 312 400 312 460 442 V560 H180 Z' fill='%23ffffff' fill-opacity='0.75'/><circle cx='350' cy='152' r='44' fill='%23ffffff' fill-opacity='0.28'/></svg>" alt="Blurred female silhouette preview 10" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 10" loading="lazy">
               </div>
               <div class="card-body">
                 <div class="card-title">Preview 10</div>
@@ -425,16 +638,371 @@
       </div>
     </div>
   </div>
+  <div id="admin-toast" class="admin-toast" role="status" aria-live="assertive" hidden></div>
   <script src="https://pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js"></script>
   <script src="https://pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js"></script>
   <script>
     (function(){
       const TERABOX_URL = 'https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA';
+      const SMARTLINK_URL = 'https://www.revenuecpmgate.com/xf7ermdz85?key=b269d3dd076f7f0bc87132f84bb60eeb';
       const downloadButtons = document.querySelectorAll('.dl');
       downloadButtons.forEach((btn, idx) => {
         btn.href = TERABOX_URL;
         btn.dataset.index = String(idx + 1);
       });
+
+      const ADMIN_PASSWORD = 'Raone'; // TODO: replace with your secret passphrase
+      const ADMIN_FLAG_KEY = 'tharkibazaar.admin.active';
+      const statsPanel = document.getElementById('stats-panel');
+      const adminIndicator = document.getElementById('admin-indicator');
+      const adminToast = document.getElementById('admin-toast');
+      let adminToastTimer = null;
+      let adminToastHideTimer = null;
+
+      if(ADMIN_PASSWORD === 'Raone'){
+        console.warn('TharkiBazaar: Update ADMIN_PASSWORD with your own secret before publishing.');
+      }
+
+      function setAdminUI(enabled){
+        if(statsPanel){
+          statsPanel.hidden = !enabled;
+        }
+        if(adminIndicator){
+          adminIndicator.hidden = !enabled;
+        }
+      }
+
+      function showAdminToast(message, duration){
+        if(!adminToast){ return; }
+        const displayMs = typeof duration === 'number' ? duration : 2200;
+        adminToast.textContent = message;
+        adminToast.hidden = false;
+        adminToast.classList.add('show');
+        if(adminToastTimer){ clearTimeout(adminToastTimer); }
+        if(adminToastHideTimer){ clearTimeout(adminToastHideTimer); }
+        adminToastTimer = setTimeout(() => {
+          adminToast.classList.remove('show');
+          adminToastHideTimer = setTimeout(() => {
+            adminToast.hidden = true;
+          }, 260);
+        }, displayMs);
+      }
+
+      function unlockAdminPrompt(){
+        const passphrase = window.prompt('Enter admin passphrase:');
+        if(!passphrase){ return; }
+        if(passphrase === ADMIN_PASSWORD){
+          try{
+            sessionStorage.setItem(ADMIN_FLAG_KEY, '1');
+          }catch(err){}
+          setAdminUI(true);
+          if(typeof renderStats === 'function'){
+            renderStats();
+          }
+          showAdminToast('Admin tools unlocked');
+        }else{
+          window.alert('Incorrect passphrase.');
+        }
+      }
+
+      function lockAdmin(){
+        const wasActive = statsPanel ? !statsPanel.hidden : false;
+        try{
+          sessionStorage.removeItem(ADMIN_FLAG_KEY);
+        }catch(err){}
+        setAdminUI(false);
+        if(wasActive){
+          showAdminToast('Admin view disabled');
+        }
+      }
+
+      function initAdminState(){
+        let enabled = false;
+        try{
+          enabled = sessionStorage.getItem(ADMIN_FLAG_KEY) === '1';
+        }catch(err){}
+        setAdminUI(enabled);
+      }
+
+      initAdminState();
+
+      document.addEventListener('keydown', event => {
+        if(event.ctrlKey && event.altKey && event.key && event.key.toLowerCase() === 'a'){
+          event.preventDefault();
+          unlockAdminPrompt();
+        }
+        if(event.ctrlKey && event.altKey && event.key && event.key.toLowerCase() === 'l'){
+          event.preventDefault();
+          lockAdmin();
+        }
+      });
+
+      const header = document.querySelector('header');
+      if(header){
+        let headerPressTimer = null;
+        header.addEventListener('mousedown', () => {
+          headerPressTimer = setTimeout(() => {
+            unlockAdminPrompt();
+          }, 1400);
+        });
+        header.addEventListener('mouseup', () => {
+          if(headerPressTimer){
+            clearTimeout(headerPressTimer);
+            headerPressTimer = null;
+          }
+        });
+        header.addEventListener('mouseleave', () => {
+          if(headerPressTimer){
+            clearTimeout(headerPressTimer);
+            headerPressTimer = null;
+          }
+        });
+        header.addEventListener('touchstart', () => {
+          headerPressTimer = setTimeout(() => {
+            unlockAdminPrompt();
+          }, 1400);
+        }, { passive: true });
+        const clearHeaderTimer = () => {
+          if(headerPressTimer){
+            clearTimeout(headerPressTimer);
+            headerPressTimer = null;
+          }
+        };
+        header.addEventListener('touchend', clearHeaderTimer);
+        header.addEventListener('touchcancel', clearHeaderTimer);
+      }
+
+      const STORAGE_KEY = 'tharkibazaar.metrics.v1';
+      function createBlankStats(){
+        return {
+          visits:0,
+          downloads:0,
+          outboundClicks:0,
+          adImpressions:{},
+          adClicks:{},
+          downloadsPerItem:{},
+          updated:null
+        };
+      }
+
+      let storageAvailable = true;
+      try{
+        const probeKey = '__tbz_probe__';
+        localStorage.setItem(probeKey, 'ok');
+        localStorage.removeItem(probeKey);
+      }catch(err){
+        storageAvailable = false;
+      }
+
+      function loadStats(){
+        const fallback = createBlankStats();
+        if(!storageAvailable){ return fallback; }
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(!raw){ return fallback; }
+          const parsed = JSON.parse(raw);
+          return {
+            ...fallback,
+            ...parsed,
+            adImpressions:{...fallback.adImpressions, ...(parsed.adImpressions || {})},
+            adClicks:{...fallback.adClicks, ...(parsed.adClicks || {})},
+            downloadsPerItem:{...fallback.downloadsPerItem, ...(parsed.downloadsPerItem || {})}
+          };
+        }catch(err){
+          console.warn('Unable to load stored stats', err);
+          return fallback;
+        }
+      }
+
+      const stats = loadStats();
+
+      function persistStats(){
+        if(!storageAvailable){ return; }
+        try{
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+        }catch(err){
+          console.warn('Unable to persist stats', err);
+        }
+      }
+
+      const statsNodes = {
+        visits: document.querySelector('[data-stat="visits"]'),
+        downloads: document.querySelector('[data-stat="downloads"]'),
+        outbound: document.querySelector('[data-stat="outbound"]'),
+        impressions: document.querySelector('[data-stat="impressions"]'),
+        adclicks: document.querySelector('[data-stat="adclicks"]'),
+        updated: document.querySelector('[data-stat="updated"]'),
+        details: document.getElementById('stats-details')
+      };
+      const exportButton = document.getElementById('stats-export');
+      const refreshAdsButton = document.getElementById('stats-refresh-ads');
+      const copyLinkButton = document.getElementById('stats-copy-link');
+
+      function formatNumber(value){
+        return typeof value === 'number' && typeof value.toLocaleString === 'function'
+          ? value.toLocaleString()
+          : String(value);
+      }
+
+      function renderStats(){
+        if(!statsNodes.visits){ return; }
+        const totalImpressions = Object.values(stats.adImpressions || {}).reduce((sum, val) => sum + Number(val || 0), 0);
+        const totalAdClicks = Object.values(stats.adClicks || {}).reduce((sum, val) => sum + Number(val || 0), 0);
+
+        if(statsNodes.visits){
+          statsNodes.visits.textContent = formatNumber(stats.visits || 0);
+        }
+        if(statsNodes.downloads){
+          statsNodes.downloads.textContent = formatNumber(stats.downloads || 0);
+        }
+        if(statsNodes.outbound){
+          statsNodes.outbound.textContent = formatNumber(stats.outboundClicks || 0);
+        }
+        if(statsNodes.impressions){
+          statsNodes.impressions.textContent = formatNumber(totalImpressions);
+        }
+        if(statsNodes.adclicks){
+          statsNodes.adclicks.textContent = formatNumber(totalAdClicks);
+        }
+
+        if(statsNodes.updated){
+          if(stats.updated){
+            const parsed = new Date(stats.updated);
+            statsNodes.updated.textContent = isNaN(parsed.getTime()) ? stats.updated : parsed.toLocaleString();
+          }else{
+            statsNodes.updated.textContent = '--';
+          }
+        }
+
+        if(!statsNodes.details){ return; }
+        const sections = [];
+        const downloadsPerItem = Object.entries(stats.downloadsPerItem || {});
+        if(downloadsPerItem.length){
+          const items = downloadsPerItem
+            .sort((a, b) => Number(a[0]) - Number(b[0]))
+            .map(([idx, count]) => `<li>Preview ${String(idx).padStart(2,'0')}: ${formatNumber(count)}</li>`);
+          sections.push(`<strong>Downloads per preview</strong><ul>${items.join('')}</ul>`);
+        }
+        const impressionsPerSlot = Object.entries(stats.adImpressions || {});
+        if(impressionsPerSlot.length){
+          const items = impressionsPerSlot
+            .sort()
+            .map(([slot, count]) => `<li>${slot}: ${formatNumber(count)}</li>`);
+          sections.push(`<strong>Ad impressions by slot</strong><ul>${items.join('')}</ul>`);
+        }
+        const adClicksPerSlot = Object.entries(stats.adClicks || {});
+        if(adClicksPerSlot.length){
+          const items = adClicksPerSlot
+            .sort()
+            .map(([slot, count]) => `<li>${slot}: ${formatNumber(count)}</li>`);
+          sections.push(`<strong>Ad slot wrapper clicks</strong><ul>${items.join('')}</ul>`);
+        }
+        if(sections.length){
+          statsNodes.details.innerHTML = `<strong>Stored locally on this device.</strong>${sections.join('')}`;
+        }else{
+          statsNodes.details.textContent = 'Stats are saved locally in this browser. Interact with downloads or ads to populate more detail.';
+        }
+      }
+
+      function updateStats(mutator){
+        if(typeof mutator === 'function'){
+          mutator(stats);
+        }
+        stats.updated = new Date().toISOString();
+        persistStats();
+        renderStats();
+      }
+
+      const resetButton = document.getElementById('stats-reset');
+      if(resetButton){
+        resetButton.addEventListener('click', () => {
+          const ok = window.confirm('Clear stored activity stats for this browser?');
+          if(!ok){ return; }
+          const fresh = createBlankStats();
+          Object.keys(stats).forEach(key => { delete stats[key]; });
+          Object.assign(stats, fresh);
+          if(storageAvailable){
+            try{
+              localStorage.removeItem(STORAGE_KEY);
+            }catch(err){}
+          }
+          renderStats();
+          showAdminToast('Stats cleared');
+        });
+      }
+
+      if(exportButton){
+        exportButton.addEventListener('click', () => {
+          const snapshot = JSON.stringify(stats, null, 2);
+          try{
+            const blob = new Blob([snapshot], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = 'tharkibazaar-stats.json';
+            document.body.appendChild(anchor);
+            anchor.click();
+            setTimeout(() => {
+              document.body.removeChild(anchor);
+              URL.revokeObjectURL(url);
+            }, 0);
+            showAdminToast('Stats exported');
+          }catch(err){
+            console.error('Unable to export stats', err);
+            window.alert('Unable to export stats. See console for details.');
+          }
+        });
+      }
+
+      if(refreshAdsButton){
+        refreshAdsButton.addEventListener('click', () => {
+          try{
+            refreshAllAds();
+            showAdminToast('Ad slots refreshed');
+          }catch(err){
+            console.error('Unable to refresh ads', err);
+            window.alert('Unable to refresh ads right now.');
+          }
+        });
+      }
+
+      function copyText(value){
+        if(!value){ return Promise.reject(new Error('Nothing to copy')); }
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          return navigator.clipboard.writeText(value);
+        }
+        return new Promise((resolve, reject) => {
+          const textarea = document.createElement('textarea');
+          textarea.value = value;
+          textarea.setAttribute('readonly', '');
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try{
+            const success = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            return success ? resolve() : reject(new Error('Copy command rejected'));
+          }catch(err){
+            document.body.removeChild(textarea);
+            reject(err);
+          }
+        });
+      }
+
+      if(copyLinkButton){
+        copyLinkButton.addEventListener('click', () => {
+          copyText(SMARTLINK_URL).then(() => {
+            showAdminToast('Smartlink copied');
+          }).catch(err => {
+            console.error('Failed to copy smartlink', err);
+            window.prompt('Copy the smartlink manually:', SMARTLINK_URL);
+          });
+        });
+      }
+
+      renderStats();
+      updateStats(s => { s.visits = (s.visits || 0) + 1; });
 
       function clearNode(node){
         while(node.firstChild){
@@ -442,15 +1010,37 @@
         }
       }
 
+      const AD_LOAD_TIMEOUT = 3500;
+      let adLoadQueue = Promise.resolve();
+
       function loadHP(target, key, width, height){
-        if(!target) return;
+        if(!target){ return; }
         clearNode(target);
-        const varScript = document.createElement('script');
-        varScript.text = 'var atOptions={key:"' + key + '",format:"iframe",height:' + height + ',width:' + width + ',params:{}};';
-        const loader = document.createElement('script');
-        loader.src = 'https://www.highperformanceformat.com/' + key + '/invoke.js';
-        target.appendChild(varScript);
-        target.appendChild(loader);
+        target.style.minHeight = height + 'px';
+        const configText = 'var atOptions={key:"' + key + '",format:"iframe",height:' + height + ',width:' + width + ',params:{}};';
+        adLoadQueue = adLoadQueue.then(() => new Promise(resolve => {
+          const configScript = document.createElement('script');
+          configScript.type = 'text/javascript';
+          configScript.text = configText;
+          const loader = document.createElement('script');
+          loader.type = 'text/javascript';
+          loader.async = true;
+          loader.src = 'https://www.highperformanceformat.com/' + key + '/invoke.js';
+          let settled = false;
+          const cleanup = () => {
+            if(settled){ return; }
+            settled = true;
+            try{ delete window.atOptions; }catch(err){}
+            resolve();
+          };
+          loader.onload = cleanup;
+          loader.onerror = cleanup;
+          setTimeout(cleanup, AD_LOAD_TIMEOUT);
+          target.appendChild(configScript);
+          target.appendChild(loader);
+        })).catch(err => {
+          console.error('Ad queue error', err);
+        });
       }
 
       const SIZES = {
@@ -521,10 +1111,12 @@
         }
       }
 
-      Object.keys(plan).forEach(rotateSlot);
-      setInterval(() => {
+      function refreshAllAds(){
         Object.keys(plan).forEach(rotateSlot);
-      }, 25000);
+      }
+
+      refreshAllAds();
+      setInterval(refreshAllAds, 25000);
 
       const GA_ID = 'G-XXXXXXX';
       if(GA_ID && GA_ID !== 'G-XXXXXXX'){
@@ -549,6 +1141,12 @@
 
       downloadButtons.forEach(btn => {
         btn.addEventListener('click', () => {
+          updateStats(state => {
+            state.downloads = (state.downloads || 0) + 1;
+            state.downloadsPerItem = state.downloadsPerItem || {};
+            const itemIndex = btn.dataset.index || '0';
+            state.downloadsPerItem[itemIndex] = (state.downloadsPerItem[itemIndex] || 0) + 1;
+          });
           sendGA('download_click', { item_index: Number(btn.dataset.index) || 0 });
         });
       });
@@ -559,6 +1157,9 @@
         try{
           const url = new URL(anchor.href, location.href);
           if(url.origin !== location.origin){
+            updateStats(state => {
+              state.outboundClicks = (state.outboundClicks || 0) + 1;
+            });
             sendGA('outbound_click', { href: anchor.href });
           }
         }catch(err){}
@@ -569,6 +1170,11 @@
         entries.forEach(entry => {
           if(entry.isIntersecting && !seenSlots.has(entry.target.id)){
             seenSlots.add(entry.target.id);
+            updateStats(state => {
+              const slotId = entry.target.id || 'ad-slot';
+              state.adImpressions = state.adImpressions || {};
+              state.adImpressions[slotId] = (state.adImpressions[slotId] || 0) + 1;
+            });
             sendGA('ad_impression', { slot_id: entry.target.id });
             observer.unobserve(entry.target);
           }
@@ -578,6 +1184,11 @@
       document.querySelectorAll('.ad-slot').forEach(slot => {
         observer.observe(slot);
         slot.addEventListener('click', () => {
+          updateStats(state => {
+            const slotId = slot.id || 'ad-slot';
+            state.adClicks = state.adClicks || {};
+            state.adClicks[slotId] = (state.adClicks[slotId] || 0) + 1;
+          });
           sendGA('ad_slot_click_proxy', { slot_id: slot.id });
         }, { passive: true, capture: true });
       });
