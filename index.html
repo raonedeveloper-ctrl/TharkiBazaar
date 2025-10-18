@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TharkiBazaar</title>
-  <meta name="description" content="TharkiBazaar mobile-first landing page with blurred previews, Terabox downloads, and admin controls.">
+  <meta name="description" content="TharkiBazaar mobile-first landing page with blurred previews, Terabox downloads, and rotating ad placements.">
   <style>
     :root{
       --bg:#eef1f6;
@@ -16,7 +16,6 @@
       --button-hover:#1d4ed8;
       --pill:#e2e8f0;
       --accent:#f1f5ff;
-      --blur-strength:12px;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
     body{
@@ -25,13 +24,6 @@
       font-family:"Segoe UI",Arial,sans-serif;
       line-height:1.55;
       padding-bottom:120px;
-      transition:background 0.2s ease;
-    }
-    body.admin-mode{
-      padding-bottom:80px;
-    }
-    body.admin-overlay-active{
-      overflow:hidden;
     }
     a{text-decoration:none;color:inherit;}
     header{
@@ -40,8 +32,6 @@
       font-weight:800;
       font-size:clamp(1.8rem,2vw + 1rem,2.8rem);
       letter-spacing:0.08em;
-      cursor:default;
-      user-select:none;
     }
     header span{display:inline-block;}
     [hidden]{display:none !important;}
@@ -59,6 +49,9 @@
       border-radius:18px;
       padding:18px;
       box-shadow:0 10px 24px rgba(15,23,42,0.05);
+    }
+    .panel:not(.stats-panel){
+      backdrop-filter:blur(2px);
     }
     .layout{
       display:flex;
@@ -92,7 +85,11 @@
       justify-content:center;
       min-height:180px;
       gap:0;
-      padding:12px;
+    }
+    .card.ad-card .ad-slot{
+      width:100%;
+      min-height:150px;
+      border-style:dashed;
     }
     .card:hover{
       transform:translateY(-4px);
@@ -124,7 +121,7 @@
       height:100%;
       object-fit:cover;
       object-position:center top;
-      filter:blur(var(--blur-strength));
+      filter:blur(12px);
       transform:scale(1.08);
       pointer-events:none;
       user-select:none;
@@ -140,7 +137,6 @@
       align-items:center;
       justify-content:center;
       box-shadow:0 6px 12px rgba(15,23,42,0.25);
-      z-index:2;
     }
     .eye-off svg{
       display:block;
@@ -155,7 +151,6 @@
       gap:10px;
       flex:1 1 auto;
       align-items:center;
-      text-align:center;
     }
     .card-title{
       font-size:0.9rem;
@@ -190,19 +185,6 @@
       outline:3px solid rgba(37,99,235,0.35);
       outline-offset:2px;
     }
-    .btn.ghost{
-      background:transparent;
-      color:var(--button);
-      box-shadow:none;
-      border:1px solid rgba(37,99,235,0.25);
-    }
-    .btn.destructive{
-      background:#dc2626;
-      box-shadow:0 8px 18px rgba(220,38,38,0.28);
-    }
-    .btn.destructive:hover{
-      background:#b91c1c;
-    }
     .ad-slot{
       width:100%;
       min-height:60px;
@@ -214,7 +196,6 @@
       justify-content:center;
       overflow:hidden;
       padding:8px;
-      position:relative;
     }
     .ad-slot span{
       font-size:0.85rem;
@@ -228,159 +209,30 @@
       width:100%;
       max-width:100%;
     }
-    .responsive-ad-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:16px;
-    }
-    .admin-indicator{
-      position:fixed;
-      top:16px;
-      right:16px;
-      background:rgba(29,78,216,0.95);
-      color:#fff;
-      padding:9px 18px;
-      border-radius:999px;
-      font-size:0.78rem;
-      letter-spacing:0.12em;
-      text-transform:uppercase;
-      box-shadow:0 12px 24px rgba(29,78,216,0.28);
-      z-index:520;
-    }
-    .floating-admin-btn{
-      position:fixed;
-      bottom:24px;
-      right:24px;
-      padding:12px 20px;
-      border-radius:999px;
-      background:var(--button);
-      color:#fff;
-      font-weight:600;
-      border:none;
-      cursor:pointer;
-      box-shadow:0 16px 32px rgba(37,99,235,0.25);
-      z-index:510;
-      transition:transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .floating-admin-btn:hover{
-      transform:translateY(-2px);
-      box-shadow:0 20px 40px rgba(37,99,235,0.3);
-    }
-    .admin-overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(15,23,42,0.72);
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:40px 16px;
-      z-index:600;
-      overflow-y:auto;
-    }
-    .admin-panel{
-      width:min(920px,100%);
-      background:#fff;
-      border-radius:20px;
-      padding:28px;
-      box-shadow:0 24px 60px rgba(15,23,42,0.3);
+    .stats-panel{
       display:flex;
       flex-direction:column;
-      gap:28px;
+      gap:18px;
     }
-    .admin-header{
+    .stats-header{
       display:flex;
       flex-wrap:wrap;
-      gap:16px;
       justify-content:space-between;
-      align-items:flex-start;
+      align-items:center;
+      gap:12px;
     }
-    .admin-header-actions{
+    .stats-actions{
       display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
       gap:10px;
-      flex-wrap:wrap;
     }
-    .chip{
-      border-radius:999px;
-      border:none;
-      padding:10px 18px;
-      background:var(--pill);
-      color:var(--text);
-      font-weight:600;
-      cursor:pointer;
-      transition:background 0.2s ease, color 0.2s ease;
-    }
-    .chip:hover{
-      background:var(--button);
-      color:#fff;
-    }
-    .chip.destructive{
-      background:#fee2e2;
-      color:#b91c1c;
-    }
-    .chip.destructive:hover{
-      background:#dc2626;
-      color:#fff;
-    }
-    .admin-section{
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-    }
-    .admin-section h3{
+    .stats-header h2{
       font-size:1.1rem;
-      font-weight:700;
-      letter-spacing:0.04em;
-      color:var(--muted);
-      text-transform:uppercase;
-    }
-    .form-grid{
-      display:grid;
-      gap:16px;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    }
-    .form-grid label{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      font-size:0.85rem;
-      color:var(--muted);
-      font-weight:600;
       letter-spacing:0.04em;
       text-transform:uppercase;
-    }
-    .form-grid input,
-    .form-grid select{
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      font-size:0.95rem;
-      color:var(--text);
-      background:#fff;
-      box-shadow:0 4px 12px rgba(15,23,42,0.05) inset;
-      outline:none;
-      transition:border 0.2s ease, box-shadow 0.2s ease;
-    }
-    .form-grid input:focus,
-    .form-grid select:focus{
-      border-color:var(--button);
-      box-shadow:0 0 0 3px rgba(37,99,235,0.18);
-    }
-    .admin-form-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-    }
-    .admin-form-actions.wrap{
-      justify-content:flex-start;
-    }
-    .visual-controls{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      max-width:320px;
-    }
-    .visual-controls input[type="range"]{
-      accent-color:var(--button);
+      color:var(--muted);
     }
     .stats-grid{
       display:grid;
@@ -395,7 +247,7 @@
       display:flex;
       flex-direction:column;
       gap:6px;
-    }
+      }
     .stats-card span{
       font-size:0.75rem;
       text-transform:uppercase;
@@ -412,7 +264,6 @@
       padding:14px 16px;
       font-size:0.9rem;
       color:var(--muted);
-      line-height:1.6;
     }
     .stats-details ul{
       margin-top:10px;
@@ -420,6 +271,51 @@
       padding-left:20px;
       display:grid;
       gap:6px;
+    }
+    .stats-actions button{
+      background:var(--button);
+      color:#fff;
+      border:none;
+      padding:9px 16px;
+      border-radius:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:background 0.2s ease, transform 0.2s ease;
+      box-shadow:0 6px 14px rgba(37,99,235,0.17);
+    }
+    .stats-actions button:hover{
+      background:var(--button-hover);
+      transform:translateY(-1px);
+    }
+    .sticky-footer{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      z-index:200;
+      background:rgba(255,255,255,0.95);
+      border-top:1px solid var(--line);
+      backdrop-filter:blur(4px);
+      padding:10px 0;
+    }
+    .sticky-inner{
+      max-width:540px;
+      margin:0 auto;
+      padding:0 16px;
+    }
+    .admin-indicator{
+      position:fixed;
+      top:16px;
+      right:16px;
+      background:rgba(29,78,216,0.95);
+      color:#fff;
+      padding:9px 18px;
+      border-radius:999px;
+      font-size:0.78rem;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      box-shadow:0 12px 24px rgba(29,78,216,0.28);
+      z-index:520;
     }
     .admin-toast{
       position:fixed;
@@ -440,22 +336,15 @@
       opacity:0.95;
       transform:translateY(0);
     }
-    body.admin-mode .ad-section,
-    body.admin-mode .ad-slot,
-    body.admin-mode .ad-card{
-      display:none !important;
-    }
     @media (max-width:780px){
       .panel{padding:18px;}
       .gallery{grid-template-columns:repeat(2,minmax(0,1fr));}
-      body{padding-bottom:160px;}
-      .admin-panel{padding:22px;}
+      body{padding-bottom:140px;}
+      .stats-header h2{font-size:1rem;}
     }
     @media (max-width:520px){
       .gallery{grid-template-columns:repeat(1,minmax(0,1fr));}
       .btn{width:100%;}
-      .admin-overlay{padding:32px 12px;}
-      .admin-panel{padding:20px;}
     }
     @media (min-width:768px){
       .gallery{grid-template-columns:repeat(3,minmax(190px,1fr));}
@@ -471,477 +360,262 @@
   </header>
   <div id="admin-indicator" class="admin-indicator" hidden>ADMIN MODE</div>
   <main class="page">
-    <section class="panel ad-section">
-      <div id="slot-top" class="ad-slot ad-wrapper" data-slot="slot-top">
+    <section id="stats-panel" class="panel stats-panel" aria-live="polite" hidden>
+      <div class="stats-header">
+        <h2>Activity Snapshot</h2>
+        <div class="stats-actions">
+          <button type="button" id="stats-copy-link">Copy Smartlink</button>
+          <button type="button" id="stats-refresh-ads">Refresh Ads</button>
+          <button type="button" id="stats-export">Export JSON</button>
+          <button type="button" id="stats-reset">Reset Stats</button>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stats-card">
+          <span>Total Visits</span>
+          <strong data-stat="visits">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Downloads</span>
+          <strong data-stat="downloads">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Outbound Clicks</span>
+          <strong data-stat="outbound">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Ad Impressions</span>
+          <strong data-stat="impressions">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Ad Clicks</span>
+          <strong data-stat="adclicks">0</strong>
+        </div>
+        <div class="stats-card">
+          <span>Last Update</span>
+          <strong data-stat="updated">--</strong>
+        </div>
+      </div>
+      <div class="stats-details" id="stats-details">
+        No activity tracked yet. Interactions on this device will show up here.
+      </div>
+    </section>
+    <section class="panel">
+      <div id="slot-top" class="ad-slot" style="min-height:120px;">
         <span>Advertisement</span>
       </div>
     </section>
     <div class="layout">
       <section class="main-column">
         <div class="panel">
-          <div id="gallery" class="gallery"></div>
+          <div class="gallery">
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 01" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 01</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card ad-card">
+              <div class="ad-slot" id="slot-inline-1" style="min-height:200px;">
+                <span>Advertisement</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1524502397800-808dc0fef78d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 02" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 02</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card ad-card">
+              <div class="ad-slot" id="slot-inline-2" style="min-height:200px;">
+                <span>Advertisement</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 03" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 03</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 04" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 04</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 05" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 05</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1502767089025-6572583495b0?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 06" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 06</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 07" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 07</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 08" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 08</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1521570167421-1afc82db536a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 09" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 09</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="thumb">
+                <span class="eye-off">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/>
+                  </svg>
+                </span>
+                <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Blurred female preview 10" loading="lazy">
+              </div>
+              <div class="card-body">
+                <div class="card-title">Preview 10</div>
+                <div class="card-actions">
+                  <a class="btn dl" href="https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA" target="_blank" rel="noopener noreferrer nofollow">Download Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <section class="panel ad-section">
-          <div id="slot-under-1" class="ad-slot ad-wrapper" data-slot="slot-under-1">
-            <span>Advertisement</span>
-          </div>
-        </section>
-        <section class="panel ad-section">
-          <div id="slot-under-2" class="ad-slot ad-wrapper" data-slot="slot-under-2">
-            <span>Advertisement</span>
-          </div>
-        </section>
-        <section class="panel">
-          <div class="responsive-ad-grid">
-            <div id="slot-mobile-1" class="ad-slot ad-wrapper" data-slot="slot-mobile-1">
-              <span>Advertisement</span>
-            </div>
-            <div id="slot-mobile-2" class="ad-slot ad-wrapper" data-slot="slot-mobile-2">
-              <span>Advertisement</span>
-            </div>
-          </div>
-        </section>
-        <section class="panel ad-section">
-          <div id="slot-bottom" class="ad-slot ad-wrapper" data-slot="slot-bottom">
-            <span>Advertisement</span>
-          </div>
-        </section>
       </section>
     </div>
   </main>
-
-  <button id="open-admin-panel" class="floating-admin-btn" hidden>Open Admin Panel</button>
-
-  <div id="admin-overlay" class="admin-overlay" hidden>
-    <div class="admin-panel">
-      <header class="admin-header">
-        <div>
-          <h2>Admin Control Center</h2>
-          <p style="color:var(--muted);max-width:520px;">
-            Adjust gallery assets, tweak blur intensity, and manage analytics. Ads stay disabled while you are in admin mode.
-          </p>
-        </div>
-        <div class="admin-header-actions">
-          <button type="button" id="admin-close" class="chip">Close Panel</button>
-          <button type="button" id="admin-logout" class="chip destructive">Log out</button>
-        </div>
-      </header>
-
-      <section class="admin-section">
-        <h3>Gallery Manager</h3>
-        <form id="admin-image-form" class="form-grid">
-          <label>
-            Choose preview
-            <select id="admin-image-select"></select>
-          </label>
-          <label>
-            Title
-            <input type="text" id="admin-image-title" maxlength="60" required>
-          </label>
-          <label>
-            Image URL
-            <input type="url" id="admin-image-url" placeholder="https://" required>
-          </label>
-          <label>
-            Download URL
-            <input type="url" id="admin-download-url" placeholder="https://" required>
-          </label>
-          <label>
-            AI Hint (optional)
-            <input type="text" id="admin-image-hint" maxlength="120">
-          </label>
-          <div class="admin-form-actions">
-            <button type="submit" class="btn">Save changes</button>
-            <button type="button" id="admin-reset-image" class="btn ghost">Reset selected</button>
-          </div>
-        </form>
-      </section>
-
-      <section class="admin-section">
-        <h3>Visual Controls</h3>
-        <div class="visual-controls">
-          <label for="admin-blur">Blur strength: <span id="blur-value">12</span>px</label>
-          <input type="range" id="admin-blur" min="0" max="25" step="1">
-          <div class="admin-form-actions">
-            <button type="button" id="reset-blur" class="btn ghost">Reset blur</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="admin-section">
-        <h3>Analytics</h3>
-        <div class="stats-grid">
-          <div class="stats-card">
-            <span>Total Visits</span>
-            <strong data-stat="visits">0</strong>
-          </div>
-          <div class="stats-card">
-            <span>Downloads</span>
-            <strong data-stat="downloads">0</strong>
-          </div>
-          <div class="stats-card">
-            <span>Outbound Clicks</span>
-            <strong data-stat="outbound">0</strong>
-          </div>
-          <div class="stats-card">
-            <span>Ad Impressions</span>
-            <strong data-stat="impressions">0</strong>
-          </div>
-          <div class="stats-card">
-            <span>Ad Clicks</span>
-            <strong data-stat="adclicks">0</strong>
-          </div>
-          <div class="stats-card">
-            <span>Last Update</span>
-            <strong data-stat="updated">--</strong>
-          </div>
-        </div>
-        <div class="admin-form-actions wrap">
-          <button type="button" id="stats-copy-link" class="btn ghost">Copy Smartlink</button>
-          <button type="button" id="stats-refresh-ads" class="btn ghost">Refresh Ads</button>
-          <button type="button" id="stats-export" class="btn ghost">Export JSON</button>
-          <button type="button" id="stats-reset" class="btn destructive">Reset Stats</button>
-        </div>
-        <div class="stats-details" id="stats-details">
-          No activity tracked yet. Interactions on this device will show up here.
-        </div>
-      </section>
-    </div>
-  </div>
-
   <div id="admin-toast" class="admin-toast" role="status" aria-live="assertive" hidden></div>
-
   <script src="https://pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js"></script>
   <script src="https://pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js"></script>
   <script>
     (function(){
-      const TERABOX_URL = 'https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA&path=%2FAllVideos';
+      const TERABOX_URL = 'https://www.1024tera.com/sharing/link?surl=PfOK7auKQ_ynPhfgWYjeqA';
       const SMARTLINK_URL = 'https://www.revenuecpmgate.com/xf7ermdz85?key=b269d3dd076f7f0bc87132f84bb60eeb';
-      const ADMIN_PASSWORD = 'Raone'; // replace before publishing
-      const DEFAULT_BLUR = 12;
+      const downloadButtons = document.querySelectorAll('.dl');
+      downloadButtons.forEach((btn, idx) => {
+        btn.href = TERABOX_URL;
+        btn.dataset.index = String(idx + 1);
+      });
 
-      const STORAGE_KEYS = {
-        gallery: 'tharkibazaar.gallery.v2',
-        blur: 'tharkibazaar.blur.v2',
-        stats: 'tharkibazaar.metrics.v2',
-        admin: 'tharkibazaar.admin.active',
-      };
-
-      const DEFAULT_GALLERY = [
-        { id: 'preview-01', title: 'Preview 01', imageUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'portrait, studio' },
-        { id: 'preview-02', title: 'Preview 02', imageUrl: 'https://images.unsplash.com/photo-1524502397800-808dc0fef78d?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'portrait, fashion' },
-        { id: 'preview-03', title: 'Preview 03', imageUrl: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'closeup, glamour' },
-        { id: 'preview-04', title: 'Preview 04', imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'portrait, smile' },
-        { id: 'preview-05', title: 'Preview 05', imageUrl: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'outdoor, summer' },
-        { id: 'preview-06', title: 'Preview 06', imageUrl: 'https://images.unsplash.com/photo-1502767089025-6572583495b0?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'portrait, studio light' },
-        { id: 'preview-07', title: 'Preview 07', imageUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'portrait, mood' },
-        { id: 'preview-08', title: 'Preview 08', imageUrl: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'portrait, neon' },
-        { id: 'preview-09', title: 'Preview 09', imageUrl: 'https://images.unsplash.com/photo-1521570167421-1afc82db536a?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'portrait, casual' },
-        { id: 'preview-10', title: 'Preview 10', imageUrl: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=900&q=80', downloadUrl: TERABOX_URL, imageHint: 'portrait, studio soft light' },
-      ];
-
-      const INLINE_ADS = [
-        { afterIndex: 1, slotId: 'slot-inline-1' },
-        { afterIndex: 3, slotId: 'slot-inline-2' },
-      ];
-
-      const AD_SCHEDULE = {
-        'slot-top': { key: '518bb62c4fe828a47ab0530ed37ad2bf', width: 728, height: 90 },
-        'slot-inline-1': { key: '72b7232ca3ae40f63836f3c472360365', width: 300, height: 250 },
-        'slot-inline-2': { key: '72b7232ca3ae40f63836f3c472360365', width: 300, height: 250 },
-        'slot-under-1': { key: '4e4e54cb42e36c5eb4dc8ab45feeefb9', width: 468, height: 60 },
-        'slot-under-2': { key: '518bb62c4fe828a47ab0530ed37ad2bf', width: 728, height: 90 },
-        'slot-mobile-1': { key: '72b7232ca3ae40f63836f3c472360365', width: 300, height: 250 },
-        'slot-mobile-2': { key: 'b7193586f4106b807d27a90a71d22c37', width: 320, height: 50 },
-        'slot-bottom': { key: 'b7193586f4106b807d27a90a71d22c37', width: 320, height: 50 },
-      };
-
-      const galleryContainer = document.getElementById('gallery');
+      const ADMIN_PASSWORD = 'Raone'; // TODO: replace with your secret passphrase
+      const ADMIN_FLAG_KEY = 'tharkibazaar.admin.active';
+      const statsPanel = document.getElementById('stats-panel');
       const adminIndicator = document.getElementById('admin-indicator');
-      const adminOverlay = document.getElementById('admin-overlay');
-      const openAdminButton = document.getElementById('open-admin-panel');
-      const adminCloseButton = document.getElementById('admin-close');
-      const adminLogoutButton = document.getElementById('admin-logout');
       const adminToast = document.getElementById('admin-toast');
-      const imageForm = document.getElementById('admin-image-form');
-      const imageSelect = document.getElementById('admin-image-select');
-      const imageTitleInput = document.getElementById('admin-image-title');
-      const imageUrlInput = document.getElementById('admin-image-url');
-      const downloadUrlInput = document.getElementById('admin-download-url');
-      const imageHintInput = document.getElementById('admin-image-hint');
-      const resetImageButton = document.getElementById('admin-reset-image');
-      const blurSlider = document.getElementById('admin-blur');
-      const blurValueLabel = document.getElementById('blur-value');
-      const resetBlurButton = document.getElementById('reset-blur');
-      const statsCopyButton = document.getElementById('stats-copy-link');
-      const statsRefreshButton = document.getElementById('stats-refresh-ads');
-      const statsExportButton = document.getElementById('stats-export');
-      const statsResetButton = document.getElementById('stats-reset');
-      const statsDetails = document.getElementById('stats-details');
-
-      const statsNodes = {
-        visits: document.querySelector('[data-stat="visits"]'),
-        downloads: document.querySelector('[data-stat="downloads"]'),
-        outbound: document.querySelector('[data-stat="outbound"]'),
-        impressions: document.querySelector('[data-stat="impressions"]'),
-        adclicks: document.querySelector('[data-stat="adclicks"]'),
-        updated: document.querySelector('[data-stat="updated"]'),
-      };
-
-      let selectedImageIndex = 0;
-      let adminMode = false;
       let adminToastTimer = null;
       let adminToastHideTimer = null;
-      let adObserver = null;
 
-      let storageAvailable = true;
-      try{
-        const probeKey = '__tbz_probe__';
-        localStorage.setItem(probeKey,'ok');
-        localStorage.removeItem(probeKey);
-      }catch(err){
-        storageAvailable = false;
-        console.warn('Local storage unavailable; customisations will not persist.', err);
+      if(ADMIN_PASSWORD === 'Raone'){
+        console.warn('TharkiBazaar: Update ADMIN_PASSWORD with your own secret before publishing.');
       }
 
-      function deepCopy(value){
-        return JSON.parse(JSON.stringify(value));
-      }
-
-      function loadGallery(){
-        if(!storageAvailable){ return deepCopy(DEFAULT_GALLERY); }
-        try{
-          const raw = localStorage.getItem(STORAGE_KEYS.gallery);
-          if(!raw){ return deepCopy(DEFAULT_GALLERY); }
-          const parsed = JSON.parse(raw);
-          if(!Array.isArray(parsed) || !parsed.length){
-            return deepCopy(DEFAULT_GALLERY);
-          }
-          return parsed.map((item, index) => ({
-            ...DEFAULT_GALLERY[index] || deepCopy(DEFAULT_GALLERY[0]),
-            ...item,
-            id: DEFAULT_GALLERY[index] ? DEFAULT_GALLERY[index].id : item.id || `custom-${index + 1}`,
-          }));
-        }catch(err){
-          console.warn('Failed to parse stored gallery', err);
-          return deepCopy(DEFAULT_GALLERY);
+      function setAdminUI(enabled){
+        if(statsPanel){
+          statsPanel.hidden = !enabled;
         }
-      }
-
-      function saveGallery(){
-        if(!storageAvailable){ return; }
-        try{
-          localStorage.setItem(STORAGE_KEYS.gallery, JSON.stringify(gallery));
-        }catch(err){
-          console.warn('Unable to persist gallery', err);
+        if(adminIndicator){
+          adminIndicator.hidden = !enabled;
         }
-      }
-
-      function loadBlur(){
-        if(!storageAvailable){ return DEFAULT_BLUR; }
-        try{
-          const raw = localStorage.getItem(STORAGE_KEYS.blur);
-          const parsed = raw ? Number(raw) : DEFAULT_BLUR;
-          return Number.isFinite(parsed) ? parsed : DEFAULT_BLUR;
-        }catch(err){
-          console.warn('Failed to load blur setting', err);
-          return DEFAULT_BLUR;
-        }
-      }
-
-      function saveBlur(value){
-        if(!storageAvailable){ return; }
-        try{
-          localStorage.setItem(STORAGE_KEYS.blur, String(value));
-        }catch(err){
-          console.warn('Unable to persist blur preference', err);
-        }
-      }
-
-      const defaultStats = {
-        visits:0,
-        downloads:0,
-        outboundClicks:0,
-        adImpressions:{},
-        adClicks:{},
-        downloadsPerItem:{},
-        updated:null,
-      };
-
-      function loadStats(){
-        if(!storageAvailable){ return deepCopy(defaultStats); }
-        try{
-          const raw = localStorage.getItem(STORAGE_KEYS.stats);
-          if(!raw){ return deepCopy(defaultStats); }
-          const parsed = JSON.parse(raw);
-          return {
-            ...deepCopy(defaultStats),
-            ...parsed,
-            adImpressions: { ...defaultStats.adImpressions, ...(parsed.adImpressions || {}) },
-            adClicks: { ...defaultStats.adClicks, ...(parsed.adClicks || {}) },
-            downloadsPerItem: { ...defaultStats.downloadsPerItem, ...(parsed.downloadsPerItem || {}) },
-          };
-        }catch(err){
-          console.warn('Unable to parse stored stats', err);
-          return deepCopy(defaultStats);
-        }
-      }
-
-      function saveStats(){
-        if(!storageAvailable){ return; }
-        try{
-          localStorage.setItem(STORAGE_KEYS.stats, JSON.stringify(stats));
-        }catch(err){
-          console.warn('Unable to persist stats', err);
-        }
-      }
-
-      function loadAdminFlag(){
-        if(!storageAvailable){ return false; }
-        try{
-          return sessionStorage.getItem(STORAGE_KEYS.admin) === '1';
-        }catch(err){
-          return false;
-        }
-      }
-
-      function saveAdminFlag(enabled){
-        if(!storageAvailable){ return; }
-        try{
-          if(enabled){
-            sessionStorage.setItem(STORAGE_KEYS.admin,'1');
-          }else{
-            sessionStorage.removeItem(STORAGE_KEYS.admin);
-          }
-        }catch(err){
-          console.warn('Unable to persist admin flag', err);
-        }
-      }
-
-      let gallery = loadGallery();
-      let blurStrength = loadBlur();
-      let stats = loadStats();
-      adminMode = loadAdminFlag();
-
-      function applyBlur(value){
-        document.documentElement.style.setProperty('--blur-strength', `${value}px`);
-        blurSlider.value = String(value);
-        blurValueLabel.textContent = String(value);
-      }
-
-      function createCard(item, index){
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        const thumb = document.createElement('div');
-        thumb.className = 'thumb';
-
-        const blurBadge = document.createElement('span');
-        blurBadge.className = 'eye-off';
-        blurBadge.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.1 3.51 3.51 2.1l18.39 18.39-1.41 1.41-2.54-2.54A11.26 11.26 0 0 1 12 20.25c-4.6 0-8.6-2.73-11-7.25a12.77 12.77 0 0 1 4.11-4.59L2.1 3.51Zm12.24 12.24-1.74-1.74a2.75 2.75 0 0 1-3.62-3.62L7.61 7.88A7.49 7.49 0 0 0 4.2 12a9.73 9.73 0 0 0 3.47 3.7A9.63 9.63 0 0 0 12 17.5a7.49 7.49 0 0 0 2.34-.36ZM9.5 6.62l1.45 1.45a2.75 2.75 0 0 1 3.98 3.7l1.51 1.51A7.52 7.52 0 0 0 19.8 12a9.73 9.73 0 0 0-3.47-3.7A9.63 9.63 0 0 0 12 6.5a7.5 7.5 0 0 0-2.5.12Z"/></svg>';
-
-        const img = document.createElement('img');
-        img.src = item.imageUrl;
-        img.alt = `${item.title} blurred preview`;
-        img.loading = 'lazy';
-        if(item.imageHint){
-          img.dataset.aiHint = item.imageHint;
-        }
-
-        thumb.appendChild(blurBadge);
-        thumb.appendChild(img);
-
-        const body = document.createElement('div');
-        body.className = 'card-body';
-
-        const title = document.createElement('div');
-        title.className = 'card-title';
-        title.textContent = item.title || `Preview ${String(index + 1).padStart(2,'0')}`;
-
-        const actions = document.createElement('div');
-        actions.className = 'card-actions';
-
-        const button = document.createElement('a');
-        button.className = 'btn dl';
-        button.href = item.downloadUrl || TERABOX_URL;
-        button.target = '_blank';
-        button.rel = 'noopener noreferrer nofollow';
-        button.dataset.index = String(index);
-        button.dataset.itemId = item.id;
-        button.textContent = 'Download Now';
-
-        actions.appendChild(button);
-        body.appendChild(title);
-        body.appendChild(actions);
-
-        card.appendChild(thumb);
-        card.appendChild(body);
-
-        return card;
-      }
-
-      function createInlineAdSlot(slotId){
-        const card = document.createElement('div');
-        card.className = 'card ad-card ad-section';
-        const slot = document.createElement('div');
-        slot.className = 'ad-slot ad-wrapper';
-        slot.id = slotId;
-        slot.dataset.slot = slotId;
-        slot.innerHTML = '<span>Advertisement</span>';
-        card.appendChild(slot);
-        return card;
-      }
-
-      function renderGallery(){
-        galleryContainer.innerHTML = '';
-        gallery.forEach((item, index) => {
-          const card = createCard(item, index);
-          galleryContainer.appendChild(card);
-          const inline = INLINE_ADS.find(ad => ad.afterIndex === index);
-          if(inline){
-            const adCard = createInlineAdSlot(inline.slotId);
-            galleryContainer.appendChild(adCard);
-          }
-        });
-        attachDownloadListeners();
-      }
-
-      function attachDownloadListeners(){
-        const buttons = galleryContainer.querySelectorAll('.btn.dl');
-        buttons.forEach(btn => {
-          btn.addEventListener('click', () => {
-            const idx = Number(btn.dataset.index);
-            const item = gallery[idx];
-            if(item){
-              trackDownload(item.id);
-              trackOutbound(btn.href);
-            }
-          });
-        });
-      }
-
-      function renderImageSelect(){
-        imageSelect.innerHTML = '';
-        gallery.forEach((item, index) => {
-          const option = document.createElement('option');
-          option.value = String(index);
-          option.textContent = `${String(index + 1).padStart(2,'0')} - ${item.title}`;
-          imageSelect.appendChild(option);
-        });
-        imageSelect.value = String(selectedImageIndex);
-      }
-
-      function populateImageForm(index){
-        if(index < 0 || index >= gallery.length){
-          index = 0;
-        }
-        selectedImageIndex = index;
-        const item = gallery[index];
-        imageTitleInput.value = item.title || '';
-        imageUrlInput.value = item.imageUrl || '';
-        downloadUrlInput.value = item.downloadUrl || TERABOX_URL;
-        imageHintInput.value = item.imageHint || '';
-        imageSelect.value = String(index);
       }
 
       function showAdminToast(message, duration){
@@ -960,55 +634,155 @@
         }, displayMs);
       }
 
-      function openAdminPanel(){
-        adminOverlay.hidden = false;
-        document.body.classList.add('admin-overlay-active');
-      }
-
-      function closeAdminPanel(){
-        adminOverlay.hidden = true;
-        document.body.classList.remove('admin-overlay-active');
-      }
-
-      function setAdminUI(enabled){
-        adminMode = enabled;
-        document.body.classList.toggle('admin-mode', enabled);
-        adminIndicator.hidden = !enabled;
-        openAdminButton.hidden = !enabled;
-        if(enabled){
-          showAdminToast('Admin mode enabled');
-        }
-      }
-
-      function promptAdminLogin(){
-        if(adminMode){ openAdminPanel(); return; }
+      function unlockAdminPrompt(){
         const passphrase = window.prompt('Enter admin passphrase:');
         if(!passphrase){ return; }
         if(passphrase === ADMIN_PASSWORD){
-          enableAdmin();
+          try{
+            sessionStorage.setItem(ADMIN_FLAG_KEY, '1');
+          }catch(err){}
+          setAdminUI(true);
+          if(typeof renderStats === 'function'){
+            renderStats();
+          }
+          showAdminToast('Admin tools unlocked');
         }else{
           window.alert('Incorrect passphrase.');
         }
       }
 
-      function enableAdmin(){
-        saveAdminFlag(true);
-        setAdminUI(true);
-        clearAds();
-        closeAdObserver();
-        openAdminPanel();
-      }
-
       function lockAdmin(){
-        const wasActive = adminMode;
-        saveAdminFlag(false);
+        const wasActive = statsPanel ? !statsPanel.hidden : false;
+        try{
+          sessionStorage.removeItem(ADMIN_FLAG_KEY);
+        }catch(err){}
         setAdminUI(false);
-        closeAdminPanel();
-        showAdminToast('Admin mode disabled', 1800);
         if(wasActive){
-          refreshAllAds();
+          showAdminToast('Admin view disabled');
         }
       }
+
+      function initAdminState(){
+        let enabled = false;
+        try{
+          enabled = sessionStorage.getItem(ADMIN_FLAG_KEY) === '1';
+        }catch(err){}
+        setAdminUI(enabled);
+      }
+
+      initAdminState();
+
+      document.addEventListener('keydown', event => {
+        if(event.ctrlKey && event.altKey && event.key && event.key.toLowerCase() === 'a'){
+          event.preventDefault();
+          unlockAdminPrompt();
+        }
+        if(event.ctrlKey && event.altKey && event.key && event.key.toLowerCase() === 'l'){
+          event.preventDefault();
+          lockAdmin();
+        }
+      });
+
+      const header = document.querySelector('header');
+      if(header){
+        let headerPressTimer = null;
+        header.addEventListener('mousedown', () => {
+          headerPressTimer = setTimeout(() => {
+            unlockAdminPrompt();
+          }, 1400);
+        });
+        header.addEventListener('mouseup', () => {
+          if(headerPressTimer){
+            clearTimeout(headerPressTimer);
+            headerPressTimer = null;
+          }
+        });
+        header.addEventListener('mouseleave', () => {
+          if(headerPressTimer){
+            clearTimeout(headerPressTimer);
+            headerPressTimer = null;
+          }
+        });
+        header.addEventListener('touchstart', () => {
+          headerPressTimer = setTimeout(() => {
+            unlockAdminPrompt();
+          }, 1400);
+        }, { passive: true });
+        const clearHeaderTimer = () => {
+          if(headerPressTimer){
+            clearTimeout(headerPressTimer);
+            headerPressTimer = null;
+          }
+        };
+        header.addEventListener('touchend', clearHeaderTimer);
+        header.addEventListener('touchcancel', clearHeaderTimer);
+      }
+
+      const STORAGE_KEY = 'tharkibazaar.metrics.v1';
+      function createBlankStats(){
+        return {
+          visits:0,
+          downloads:0,
+          outboundClicks:0,
+          adImpressions:{},
+          adClicks:{},
+          downloadsPerItem:{},
+          updated:null
+        };
+      }
+
+      let storageAvailable = true;
+      try{
+        const probeKey = '__tbz_probe__';
+        localStorage.setItem(probeKey, 'ok');
+        localStorage.removeItem(probeKey);
+      }catch(err){
+        storageAvailable = false;
+      }
+
+      function loadStats(){
+        const fallback = createBlankStats();
+        if(!storageAvailable){ return fallback; }
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(!raw){ return fallback; }
+          const parsed = JSON.parse(raw);
+          return {
+            ...fallback,
+            ...parsed,
+            adImpressions:{...fallback.adImpressions, ...(parsed.adImpressions || {})},
+            adClicks:{...fallback.adClicks, ...(parsed.adClicks || {})},
+            downloadsPerItem:{...fallback.downloadsPerItem, ...(parsed.downloadsPerItem || {})}
+          };
+        }catch(err){
+          console.warn('Unable to load stored stats', err);
+          return fallback;
+        }
+      }
+
+      const stats = loadStats();
+
+      function persistStats(){
+        if(!storageAvailable){ return; }
+        try{
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+        }catch(err){
+          console.warn('Unable to persist stats', err);
+        }
+      }
+
+      const statsNodes = {
+        visits: document.querySelector('[data-stat="visits"]'),
+        downloads: document.querySelector('[data-stat="downloads"]'),
+        outbound: document.querySelector('[data-stat="outbound"]'),
+        impressions: document.querySelector('[data-stat="impressions"]'),
+        adclicks: document.querySelector('[data-stat="adclicks"]'),
+        updated: document.querySelector('[data-stat="updated"]'),
+        details: document.getElementById('stats-details')
+      };
+      const exportButton = document.getElementById('stats-export');
+      const refreshAdsButton = document.getElementById('stats-refresh-ads');
+      const copyLinkButton = document.getElementById('stats-copy-link');
 
       function formatNumber(value){
         return typeof value === 'number' && typeof value.toLocaleString === 'function'
@@ -1017,6 +791,10 @@
       }
 
       function renderStats(){
+        if(!statsNodes.visits){ return; }
+        const totalImpressions = Object.values(stats.adImpressions || {}).reduce((sum, val) => sum + Number(val || 0), 0);
+        const totalAdClicks = Object.values(stats.adClicks || {}).reduce((sum, val) => sum + Number(val || 0), 0);
+
         if(statsNodes.visits){
           statsNodes.visits.textContent = formatNumber(stats.visits || 0);
         }
@@ -1027,13 +805,12 @@
           statsNodes.outbound.textContent = formatNumber(stats.outboundClicks || 0);
         }
         if(statsNodes.impressions){
-          const totalImpressions = Object.values(stats.adImpressions || {}).reduce((sum, val) => sum + Number(val || 0), 0);
           statsNodes.impressions.textContent = formatNumber(totalImpressions);
         }
         if(statsNodes.adclicks){
-          const totalAdClicks = Object.values(stats.adClicks || {}).reduce((sum, val) => sum + Number(val || 0), 0);
           statsNodes.adclicks.textContent = formatNumber(totalAdClicks);
         }
+
         if(statsNodes.updated){
           if(stats.updated){
             const parsed = new Date(stats.updated);
@@ -1043,118 +820,135 @@
           }
         }
 
-        if(!statsDetails){ return; }
+        if(!statsNodes.details){ return; }
         const sections = [];
         const downloadsPerItem = Object.entries(stats.downloadsPerItem || {});
         if(downloadsPerItem.length){
           const items = downloadsPerItem
-            .map(([id, count]) => {
-              const idx = gallery.findIndex(item => item.id === id);
-              const label = idx >= 0 ? gallery[idx].title || `Preview ${String(idx + 1).padStart(2,'0')}` : id;
-              return `<li>${label}: ${formatNumber(count)}</li>`;
-            })
-            .join('');
-          sections.push(`<strong>Downloads per preview</strong><ul>${items}</ul>`);
+            .sort((a, b) => Number(a[0]) - Number(b[0]))
+            .map(([idx, count]) => `<li>Preview ${String(idx).padStart(2,'0')}: ${formatNumber(count)}</li>`);
+          sections.push(`<strong>Downloads per preview</strong><ul>${items.join('')}</ul>`);
         }
         const impressionsPerSlot = Object.entries(stats.adImpressions || {});
         if(impressionsPerSlot.length){
           const items = impressionsPerSlot
             .sort()
-            .map(([slot, count]) => `<li>${slot}: ${formatNumber(count)}</li>`)
-            .join('');
-          sections.push(`<strong>Ad impressions by slot</strong><ul>${items}</ul>`);
+            .map(([slot, count]) => `<li>${slot}: ${formatNumber(count)}</li>`);
+          sections.push(`<strong>Ad impressions by slot</strong><ul>${items.join('')}</ul>`);
         }
         const adClicksPerSlot = Object.entries(stats.adClicks || {});
         if(adClicksPerSlot.length){
           const items = adClicksPerSlot
             .sort()
-            .map(([slot, count]) => `<li>${slot}: ${formatNumber(count)}</li>`)
-            .join('');
-          sections.push(`<strong>Ad slot wrapper clicks</strong><ul>${items}</ul>`);
+            .map(([slot, count]) => `<li>${slot}: ${formatNumber(count)}</li>`);
+          sections.push(`<strong>Ad slot wrapper clicks</strong><ul>${items.join('')}</ul>`);
         }
         if(sections.length){
-          statsDetails.innerHTML = `<strong>Stored locally on this device.</strong>${sections.join('')}`;
+          statsNodes.details.innerHTML = `<strong>Stored locally on this device.</strong>${sections.join('')}`;
         }else{
-          statsDetails.textContent = 'Stats are saved locally in this browser. Interact with downloads or ads to populate more detail.';
+          statsNodes.details.textContent = 'Stats are saved locally in this browser. Interact with downloads or ads to populate more detail.';
         }
       }
+
       function updateStats(mutator){
         if(typeof mutator === 'function'){
           mutator(stats);
         }
         stats.updated = new Date().toISOString();
-        saveStats();
+        persistStats();
         renderStats();
       }
 
-      function resetStats(){
-        stats = deepCopy(defaultStats);
-        saveStats();
-        renderStats();
-        showAdminToast('Stats cleared');
+      const resetButton = document.getElementById('stats-reset');
+      if(resetButton){
+        resetButton.addEventListener('click', () => {
+          const ok = window.confirm('Clear stored activity stats for this browser?');
+          if(!ok){ return; }
+          const fresh = createBlankStats();
+          Object.keys(stats).forEach(key => { delete stats[key]; });
+          Object.assign(stats, fresh);
+          if(storageAvailable){
+            try{
+              localStorage.removeItem(STORAGE_KEY);
+            }catch(err){}
+          }
+          renderStats();
+          showAdminToast('Stats cleared');
+        });
       }
 
-      function exportStats(){
-        try{
+      if(exportButton){
+        exportButton.addEventListener('click', () => {
           const snapshot = JSON.stringify(stats, null, 2);
-          const blob = new Blob([snapshot], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const anchor = document.createElement('a');
-          anchor.href = url;
-          anchor.download = 'tharkibazaar-stats.json';
-          document.body.appendChild(anchor);
-          anchor.click();
-          setTimeout(() => {
-            document.body.removeChild(anchor);
-            URL.revokeObjectURL(url);
-          }, 0);
-          showAdminToast('Stats exported');
-        }catch(err){
-          console.error('Unable to export stats', err);
-          window.alert('Unable to export stats. See console for details.');
-        }
+          try{
+            const blob = new Blob([snapshot], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = 'tharkibazaar-stats.json';
+            document.body.appendChild(anchor);
+            anchor.click();
+            setTimeout(() => {
+              document.body.removeChild(anchor);
+              URL.revokeObjectURL(url);
+            }, 0);
+            showAdminToast('Stats exported');
+          }catch(err){
+            console.error('Unable to export stats', err);
+            window.alert('Unable to export stats. See console for details.');
+          }
+        });
       }
 
-      function copySmartlink(){
+      if(refreshAdsButton){
+        refreshAdsButton.addEventListener('click', () => {
+          try{
+            refreshAllAds();
+            showAdminToast('Ad slots refreshed');
+          }catch(err){
+            console.error('Unable to refresh ads', err);
+            window.alert('Unable to refresh ads right now.');
+          }
+        });
+      }
+
+      function copyText(value){
+        if(!value){ return Promise.reject(new Error('Nothing to copy')); }
         if(navigator.clipboard && navigator.clipboard.writeText){
-          navigator.clipboard.writeText(SMARTLINK_URL).then(() => {
+          return navigator.clipboard.writeText(value);
+        }
+        return new Promise((resolve, reject) => {
+          const textarea = document.createElement('textarea');
+          textarea.value = value;
+          textarea.setAttribute('readonly', '');
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try{
+            const success = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            return success ? resolve() : reject(new Error('Copy command rejected'));
+          }catch(err){
+            document.body.removeChild(textarea);
+            reject(err);
+          }
+        });
+      }
+
+      if(copyLinkButton){
+        copyLinkButton.addEventListener('click', () => {
+          copyText(SMARTLINK_URL).then(() => {
             showAdminToast('Smartlink copied');
           }).catch(err => {
             console.error('Failed to copy smartlink', err);
             window.prompt('Copy the smartlink manually:', SMARTLINK_URL);
           });
-        }else{
-          window.prompt('Copy the smartlink manually:', SMARTLINK_URL);
-        }
-      }
-
-      function trackDownload(itemId){
-        updateStats(state => {
-          state.downloads = (state.downloads || 0) + 1;
-          if(!state.downloadsPerItem){ state.downloadsPerItem = {}; }
-          state.downloadsPerItem[itemId] = (state.downloadsPerItem[itemId] || 0) + 1;
         });
       }
 
-      function trackOutbound(href){
-        updateStats(state => {
-          state.outboundClicks = (state.outboundClicks || 0) + 1;
-        });
-      }
-
-      function trackAdImpression(slotId){
-        updateStats(state => {
-          if(!state.adImpressions){ state.adImpressions = {}; }
-          state.adImpressions[slotId] = (state.adImpressions[slotId] || 0) + 1;
-        });
-      }
-
-      function trackAdClick(slotId){
-        updateStats(state => {
-          if(!state.adClicks){ state.adClicks = {}; }
-          state.adClicks[slotId] = (state.adClicks[slotId] || 0) + 1;
-        });
-      }
+      renderStats();
+      updateStats(s => { s.visits = (s.visits || 0) + 1; });
 
       function clearNode(node){
         while(node.firstChild){
@@ -1162,243 +956,176 @@
         }
       }
 
-      function loadAdIntoSlot(slotId, config){
-        const container = document.getElementById(slotId);
-        if(!container){ return Promise.resolve(); }
-        clearNode(container);
-        const placeholder = document.createElement('span');
-        placeholder.textContent = 'Loading ad�';
-        container.appendChild(placeholder);
-        return new Promise(resolve => {
-          try{
-            const configScript = document.createElement('script');
-            configScript.type = 'text/javascript';
-            configScript.innerHTML = `atOptions = {'key' : '${config.key}','format' : 'iframe','height' : ${config.height},'width' : ${config.width},'params' : {}};`;
-            const loader = document.createElement('script');
-            loader.type = 'text/javascript';
-            loader.async = true;
-            loader.src = `//www.highperformanceformat.com/${config.key}/invoke.js`;
-            loader.onload = loader.onerror = () => resolve();
-            container.appendChild(configScript);
-            container.appendChild(loader);
-            setTimeout(resolve, 3500);
-          }catch(err){
-            console.error('Ad load error', err);
+      const AD_LOAD_TIMEOUT = 3500;
+      let adLoadQueue = Promise.resolve();
+
+      function loadHP(target, key, width, height){
+        if(!target){ return; }
+        clearNode(target);
+        target.style.minHeight = height + 'px';
+        const configText = 'var atOptions={key:"' + key + '",format:"iframe",height:' + height + ',width:' + width + ',params:{}};';
+        adLoadQueue = adLoadQueue.then(() => new Promise(resolve => {
+          const configScript = document.createElement('script');
+          configScript.type = 'text/javascript';
+          configScript.text = configText;
+          const loader = document.createElement('script');
+          loader.type = 'text/javascript';
+          loader.async = true;
+          loader.src = 'https://www.highperformanceformat.com/' + key + '/invoke.js';
+          let settled = false;
+          const cleanup = () => {
+            if(settled){ return; }
+            settled = true;
+            try{ delete window.atOptions; }catch(err){}
             resolve();
-          }
+          };
+          loader.onload = cleanup;
+          loader.onerror = cleanup;
+          setTimeout(cleanup, AD_LOAD_TIMEOUT);
+          target.appendChild(configScript);
+          target.appendChild(loader);
+        })).catch(err => {
+          console.error('Ad queue error', err);
         });
       }
 
-      function clearAds(){
-        document.querySelectorAll('.ad-slot').forEach(slot => {
-          clearNode(slot);
-          const placeholder = document.createElement('span');
-          placeholder.textContent = 'Advertisement';
-          slot.appendChild(placeholder);
-        });
-      }
+      const SIZES = {
+        k300x250:'72b7232ca3ae40f63836f3c472360365',
+        k728x90:'518bb62c4fe828a47ab0530ed37ad2bf',
+        k160x600:'d36c2f4dfc3863469f3b2132607617c6',
+        k160x300:'9ab75744061e372e002498c8b7270b8e',
+        k468x60:'4e4e54cb42e36c5eb4dc8ab45feeefb9',
+        k320x50:'b7193586f4106b807d27a90a71d22c37'
+      };
 
-      function initAdObserver(){
-        if(adObserver){ adObserver.disconnect(); }
-        adObserver = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if(entry.isIntersecting && entry.target.id){
-              trackAdImpression(entry.target.id);
-              adObserver.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.5 });
-      }
+      const plan = {
+        'slot-top': [
+          el => loadHP(el, SIZES.k728x90, 728, 90),
+          el => loadHP(el, SIZES.k468x60, 468, 60)
+        ],
+        'slot-inline-1': [
+          el => loadHP(el, SIZES.k300x250, 300, 250),
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
+        'slot-inline-2': [
+          el => loadHP(el, SIZES.k300x250, 300, 250),
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
+        'slot-under-1': [
+          el => loadHP(el, SIZES.k468x60, 468, 60),
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
+        'slot-under-2': [
+          el => loadHP(el, SIZES.k728x90, 728, 90),
+          el => loadHP(el, SIZES.k468x60, 468, 60)
+        ],
+        'slot-mobile-1': [
+          el => loadHP(el, SIZES.k300x250, 300, 250),
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
+        'slot-mobile-2': [
+          el => loadHP(el, SIZES.k320x50, 320, 50),
+          el => loadHP(el, SIZES.k300x250, 300, 250)
+        ],
+        'slot-bottom': [
+          el => loadHP(el, SIZES.k320x50, 320, 50),
+          el => loadHP(el, SIZES.k468x60, 468, 60)
+        ]
+      };
 
-      function registerAdSlots(){
-        if(adminMode){ return; }
-        if(!adObserver){ initAdObserver(); }
-        adObserver.disconnect();
-        const slots = document.querySelectorAll('.ad-slot');
-        slots.forEach(slot => {
-          adObserver.observe(slot);
-        });
-      }
-
-      function closeAdObserver(){
-        if(adObserver){
-          adObserver.disconnect();
+      const ACTIVE_INDEX = {};
+      function rotateSlot(id){
+        const el = document.getElementById(id);
+        const handlers = plan[id];
+        if(!el || !handlers || handlers.length === 0){ return; }
+        const next = ((ACTIVE_INDEX[id] ?? -1) + 1) % handlers.length;
+        ACTIVE_INDEX[id] = next;
+        try{
+          handlers[next](el);
+        }catch(err){
+          console.error('Ad load error for', id, err);
         }
       }
 
       function refreshAllAds(){
-        if(adminMode){ return; }
-        clearAds();
-        let queue = Promise.resolve();
-        Object.entries(AD_SCHEDULE).forEach(([slotId, config]) => {
-          const container = document.getElementById(slotId);
-          if(!container){ return; }
-          queue = queue.then(() => loadAdIntoSlot(slotId, config));
+        Object.keys(plan).forEach(rotateSlot);
+      }
+
+      refreshAllAds();
+
+      const GA_ID = 'G-XXXXXXX';
+      if(GA_ID && GA_ID !== 'G-XXXXXXX'){
+        const gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+        document.head.appendChild(gaScript);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA_ID);
+      }
+
+      function sendGA(name, params){
+        if(typeof window.gtag === 'function'){
+          window.gtag('event', name, params || {});
+        }
+      }
+
+      sendGA('page_visit', { page: location.pathname || 'index.html' });
+
+      downloadButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          updateStats(state => {
+            state.downloads = (state.downloads || 0) + 1;
+            state.downloadsPerItem = state.downloadsPerItem || {};
+            const itemIndex = btn.dataset.index || '0';
+            state.downloadsPerItem[itemIndex] = (state.downloadsPerItem[itemIndex] || 0) + 1;
+          });
+          sendGA('download_click', { item_index: Number(btn.dataset.index) || 0 });
         });
-        queue.then(() => registerAdSlots());
-      }
+      });
 
-      document.addEventListener('click', event => {
-        const anchor = event.target.closest('a[href]');
-        if(anchor){
-          try{
-            const url = new URL(anchor.href, location.href);
-            if(url.origin !== location.origin){
-              trackOutbound(anchor.href);
-            }
-          }catch(err){
-            // ignore parse errors
+      document.addEventListener('click', evt => {
+        const anchor = evt.target.closest('a[href]');
+        if(!anchor){ return; }
+        try{
+          const url = new URL(anchor.href, location.href);
+          if(url.origin !== location.origin){
+            updateStats(state => {
+              state.outboundClicks = (state.outboundClicks || 0) + 1;
+            });
+            sendGA('outbound_click', { href: anchor.href });
           }
-        }
-        const adSlot = event.target.closest('.ad-slot');
-        if(adSlot && !adminMode){
-          trackAdClick(adSlot.id || 'ad-slot');
-        }
-      }, true);
+        }catch(err){}
+      });
 
-      document.addEventListener('keydown', event => {
-        if(event.ctrlKey && event.altKey && event.key){
-          const key = event.key.toLowerCase();
-          if(key === 'a'){
-            event.preventDefault();
-            promptAdminLogin();
+      const seenSlots = new Set();
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting && !seenSlots.has(entry.target.id)){
+            seenSlots.add(entry.target.id);
+            updateStats(state => {
+              const slotId = entry.target.id || 'ad-slot';
+              state.adImpressions = state.adImpressions || {};
+              state.adImpressions[slotId] = (state.adImpressions[slotId] || 0) + 1;
+            });
+            sendGA('ad_impression', { slot_id: entry.target.id });
+            observer.unobserve(entry.target);
           }
-          if(key === 'l'){
-            event.preventDefault();
-            lockAdmin();
-          }
-        }
-      });
+        });
+      }, { rootMargin: '0px 0px -20% 0px' });
 
-      (function registerHeaderLongPress(){
-        const header = document.querySelector('header');
-        if(!header){ return; }
-        let timer = null;
-        const start = () => {
-          timer = setTimeout(() => {
-            promptAdminLogin();
-          }, 1400);
-        };
-        const clear = () => {
-          if(timer){
-            clearTimeout(timer);
-            timer = null;
-          }
-        };
-        header.addEventListener('mousedown', start);
-        header.addEventListener('mouseup', clear);
-        header.addEventListener('mouseleave', clear);
-        header.addEventListener('touchstart', start, { passive: true });
-        header.addEventListener('touchend', clear);
-        header.addEventListener('touchcancel', clear);
-      })();
-
-      imageSelect.addEventListener('change', event => {
-        populateImageForm(Number(event.target.value));
-      });
-
-      imageForm.addEventListener('submit', event => {
-        event.preventDefault();
-        const index = Number(imageSelect.value);
-        if(isNaN(index) || index < 0 || index >= gallery.length){
-          window.alert('Invalid selection.');
-          return;
-        }
-        const updated = {
-          ...gallery[index],
-          title: imageTitleInput.value.trim() || gallery[index].title,
-          imageUrl: imageUrlInput.value.trim() || gallery[index].imageUrl,
-          downloadUrl: downloadUrlInput.value.trim() || TERABOX_URL,
-          imageHint: imageHintInput.value.trim(),
-        };
-        gallery[index] = updated;
-        saveGallery();
-        renderGallery();
-        renderImageSelect();
-        populateImageForm(index);
-        if(!adminMode){
-          refreshAllAds();
-        }
-        showAdminToast('Preview updated');
-      });
-
-      resetImageButton.addEventListener('click', () => {
-        const index = Number(imageSelect.value);
-        if(isNaN(index) || index < 0 || index >= DEFAULT_GALLERY.length){
-          window.alert('Nothing to reset for this slot.');
-          return;
-        }
-        gallery[index] = deepCopy(DEFAULT_GALLERY[index]);
-        saveGallery();
-        renderGallery();
-        renderImageSelect();
-        populateImageForm(index);
-        if(!adminMode){
-          refreshAllAds();
-        }
-        showAdminToast('Preview reset to default');
-      });
-
-      blurSlider.addEventListener('input', event => {
-        const value = Number(event.target.value);
-        blurStrength = value;
-        applyBlur(value);
-        saveBlur(value);
-      });
-
-      resetBlurButton.addEventListener('click', () => {
-        blurStrength = DEFAULT_BLUR;
-        applyBlur(DEFAULT_BLUR);
-        saveBlur(DEFAULT_BLUR);
-        showAdminToast('Blur strength reset');
-      });
-
-      openAdminButton.addEventListener('click', openAdminPanel);
-      adminCloseButton.addEventListener('click', closeAdminPanel);
-      adminLogoutButton.addEventListener('click', lockAdmin);
-
-      statsCopyButton.addEventListener('click', copySmartlink);
-      statsExportButton.addEventListener('click', exportStats);
-      statsResetButton.addEventListener('click', () => {
-        if(window.confirm('Clear stored activity stats for this browser?')){
-          resetStats();
-        }
-      });
-      statsRefreshButton.addEventListener('click', () => {
-        if(adminMode){
-          showAdminToast('Ads are disabled in admin mode');
-          return;
-        }
-        refreshAllAds();
-        showAdminToast('Ad slots refreshed');
-      });
-
-      if(ADMIN_PASSWORD === 'Raone'){
-        console.warn('TharkiBazaar: Update ADMIN_PASSWORD with your own secret before publishing.');
-      }
-
-      applyBlur(blurStrength);
-      renderGallery();
-      renderImageSelect();
-      populateImageForm(selectedImageIndex);
-      renderStats();
-      updateStats(state => {
-        state.visits = (state.visits || 0) + 1;
-      });
-
-      if(adminMode){
-        setAdminUI(true);
-        clearAds();
-        closeAdObserver();
-        openAdminPanel();
-      }else{
-        refreshAllAds();
-      }
-
-      document.addEventListener('visibilitychange', () => {
-        if(document.visibilityState === 'visible' && !adminMode){
-          refreshAllAds();
-        }
+      document.querySelectorAll('.ad-slot').forEach(slot => {
+        observer.observe(slot);
+        slot.addEventListener('click', () => {
+          updateStats(state => {
+            const slotId = slot.id || 'ad-slot';
+            state.adClicks = state.adClicks || {};
+            state.adClicks[slotId] = (state.adClicks[slotId] || 0) + 1;
+          });
+          sendGA('ad_slot_click_proxy', { slot_id: slot.id });
+        }, { passive: true, capture: true });
       });
     })();
   </script>
