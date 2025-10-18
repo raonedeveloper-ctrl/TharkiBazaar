@@ -55,7 +55,11 @@
     }
     .layout{
       display:grid;
+<<<<<<< HEAD
       grid-template-columns:210px minmax(0,1fr) 320px;
+=======
+      grid-template-columns:210px minmax(0,1fr) 320px;
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
       gap:20px;
       align-items:start;
     }
@@ -330,6 +334,7 @@
       opacity:0.95;
       transform:translateY(0);
     }
+<<<<<<< HEAD
     @media (max-width:1100px){
       .layout{
         grid-template-columns:minmax(0,1fr);
@@ -362,6 +367,40 @@
     @media (max-width:520px){
       .btn{width:100%;}
     }
+=======
+    @media (max-width:1100px){
+      .layout{
+        grid-template-columns:minmax(0,1fr);
+        gap:16px;
+      }
+      .sidebar-left,
+      .sidebar-right{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+        gap:16px;
+        order:2;
+      }
+      .main-column{order:1;}
+    }
+    @media (max-width:780px){
+      .layout{grid-template-columns:1fr;}
+      .sidebar-left,
+      .sidebar-right{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        gap:14px;
+        order:2;
+      }
+      .main-column{order:1;}
+      .panel{padding:18px;}
+      .gallery{grid-template-columns:repeat(2,minmax(0,1fr));}
+      body{padding-bottom:140px;}
+      .stats-header h2{font-size:1rem;}
+    }
+    @media (max-width:520px){
+      .btn{width:100%;}
+    }
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
     @media (min-width:768px){
       .gallery{grid-template-columns:repeat(3,minmax(190px,1fr));}
     }
@@ -417,6 +456,7 @@
       </div>
     </section>
     <div class="layout">
+<<<<<<< HEAD
       <aside class="sidebar-left">
         <div class="panel">
           <div id="slot-left-1" class="ad-slot" style="min-height:600px;">
@@ -444,6 +484,35 @@
           </div>
         </div>
       </aside>
+=======
+      <aside class="sidebar-left">
+        <div class="panel">
+          <div id="slot-left-1" class="ad-slot" style="min-height:600px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-left-2" class="ad-slot" style="min-height:300px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-left-3" class="ad-slot" style="min-height:600px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-left-4" class="ad-slot" style="min-height:300px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-left-5" class="ad-slot" style="min-height:600px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+      </aside>
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
       <section class="main-column">
         <div class="panel">
           <div class="gallery">
@@ -610,6 +679,7 @@
           </div>
         </div>
       </section>
+<<<<<<< HEAD
       <aside class="sidebar-right">
         <div class="panel">
           <div id="slot-right-1" class="ad-slot" style="min-height:250px;">
@@ -640,6 +710,38 @@
     </div>
   </main>
   <div id="admin-toast" class="admin-toast" role="status" aria-live="assertive" hidden></div>
+=======
+      <aside class="sidebar-right">
+        <div class="panel">
+          <div id="slot-right-1" class="ad-slot" style="min-height:250px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-right-2" class="ad-slot" style="min-height:120px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-right-3" class="ad-slot" style="min-height:250px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-right-4" class="ad-slot" style="min-height:120px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="slot-right-5" class="ad-slot" style="min-height:250px;">
+            <span>Advertisement</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <div id="admin-toast" class="admin-toast" role="status" aria-live="assertive" hidden></div>
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
   <script src="https://pl27733128.revenuecpmgate.com/aa/5f/65/aa5f65bd170576514aff7ed9f749c09c.js"></script>
   <script src="https://pl27745183.revenuecpmgate.com/13/1f/fe/131ffed8b4e68b9b3eab58113d5a2ccf.js"></script>
   <script>
@@ -655,8 +757,13 @@
       const ADMIN_PASSWORD = 'Raone'; // TODO: replace with your secret passphrase
       const ADMIN_FLAG_KEY = 'tharkibazaar.admin.active';
       const statsPanel = document.getElementById('stats-panel');
+<<<<<<< HEAD
       const adminIndicator = document.getElementById('admin-indicator');
       const adminToast = document.getElementById('admin-toast');
+=======
+      const adminIndicator = document.getElementById('admin-indicator');
+      const adminToast = document.getElementById('admin-toast');
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
       let adminToastTimer = null;
       let adminToastHideTimer = null;
 
@@ -773,7 +880,11 @@
         header.addEventListener('touchcancel', clearHeaderTimer);
       }
 
+<<<<<<< HEAD
       const STORAGE_KEY = 'tharkibazaar.metrics.v1';
+=======
+      const STORAGE_KEY = 'tharkibazaar.metrics.v1';
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
       function createBlankStats(){
         return {
           visits:0,
@@ -991,6 +1102,7 @@
         });
       }
 
+<<<<<<< HEAD
       if(copyLinkButton){
         copyLinkButton.addEventListener('click', () => {
           copyText(SMARTLINK_URL).then(() => {
@@ -1001,6 +1113,18 @@
           });
         });
       }
+=======
+      if(copyLinkButton){
+        copyLinkButton.addEventListener('click', () => {
+          copyText(SMARTLINK_URL).then(() => {
+            showAdminToast('Smartlink copied');
+          }).catch(err => {
+            console.error('Failed to copy smartlink', err);
+            window.prompt('Copy the smartlink manually:', SMARTLINK_URL);
+          });
+        });
+      }
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
 
       renderStats();
       updateStats(s => { s.visits = (s.visits || 0) + 1; });
@@ -1053,6 +1177,7 @@
         k320x50:'b7193586f4106b807d27a90a71d22c37'
       };
 
+<<<<<<< HEAD
       const plan = {
         'slot-left-1': [
           el => loadHP(el, SIZES.k160x600, 160, 600)
@@ -1085,6 +1210,40 @@
           el => loadHP(el, SIZES.k300x250, 300, 250)
         ]
       };
+=======
+      const plan = {
+        'slot-left-1': [
+          el => loadHP(el, SIZES.k160x600, 160, 600)
+        ],
+        'slot-left-2': [
+          el => loadHP(el, SIZES.k160x300, 160, 300)
+        ],
+        'slot-left-3': [
+          el => loadHP(el, SIZES.k160x600, 160, 600)
+        ],
+        'slot-left-4': [
+          el => loadHP(el, SIZES.k160x300, 160, 300)
+        ],
+        'slot-left-5': [
+          el => loadHP(el, SIZES.k160x600, 160, 600)
+        ],
+        'slot-right-1': [
+          el => loadHP(el, SIZES.k300x250, 300, 250)
+        ],
+        'slot-right-2': [
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
+        'slot-right-3': [
+          el => loadHP(el, SIZES.k300x250, 300, 250)
+        ],
+        'slot-right-4': [
+          el => loadHP(el, SIZES.k320x50, 320, 50)
+        ],
+        'slot-right-5': [
+          el => loadHP(el, SIZES.k300x250, 300, 250)
+        ]
+      };
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
 
       const ACTIVE_INDEX = {};
       function rotateSlot(id){
@@ -1104,7 +1263,11 @@
         Object.keys(plan).forEach(rotateSlot);
       }
 
+<<<<<<< HEAD
       refreshAllAds();
+=======
+      refreshAllAds();
+>>>>>>> c7b56fc5b0f55147e1f5c9f999e63b10c6c26379
 
       const GA_ID = 'G-XXXXXXX';
       if(GA_ID && GA_ID !== 'G-XXXXXXX'){
